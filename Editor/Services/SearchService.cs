@@ -12,7 +12,6 @@ using ModelContextProtocol.Server;
 using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
-using Sirenix.Utilities;
 
 namespace Nurture.MCP.Editor.Services
 {

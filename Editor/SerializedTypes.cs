@@ -5,26 +5,9 @@ using System.Linq;
 using ModelContextProtocol;
 using UnityEditor;
 using UnityEngine;
-using Unity.Behavior.GraphFramework;
 
 namespace Nurture.MCP.Editor
 {
-    public record MCPSerializableGUID
-    {
-        public string m_Value1 { get; set; }
-        public string m_Value2 { get; set; }
-
-        public static explicit operator MCPSerializableGUID(SerializableGUID guid) =>
-            new()
-            {
-                m_Value1 = guid.ToParts().Item1.ToString(),
-                m_Value2 = guid.ToParts().Item2.ToString(),
-            };
-
-        public static explicit operator SerializableGUID(MCPSerializableGUID guid) =>
-            new(ulong.Parse(guid.m_Value1), ulong.Parse(guid.m_Value2));
-    }
-
     public record MCPVector3
     {
         public float x { get; set; }

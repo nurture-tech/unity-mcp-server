@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `USE_MCP` to a couple of places that were missing it
 
+- Removed references to non-builtin packages
+
 ## [0.1.3] - 2025-05-08
 
 ### Added
