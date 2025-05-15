@@ -1,3 +1,6 @@
+
+#if USE_MCP
+
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,3 +58,5 @@ namespace Nurture.MCP.Editor
         }
     }
 }
+
+#endif
