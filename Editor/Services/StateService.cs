@@ -1,3 +1,5 @@
+#if USE_MCP
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -82,3 +84,5 @@ namespace Nurture.Mcp.Editor.Services
         }
     }
 }
+
+#endif
