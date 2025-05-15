@@ -132,6 +132,7 @@ namespace Nurture.MCP.Editor.Services
                 @"The C# class to compile and execute which follows the format:      
 
                     using ModelContextProtocol;
+                    using System;
                     using System.Threading;
                     using System.Threading.Tasks;
                     {{ using }}
