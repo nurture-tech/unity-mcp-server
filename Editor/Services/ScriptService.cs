@@ -225,6 +225,8 @@ namespace Nurture.MCP.Editor.Services
             // Use Mono's built-in compiler
             var options = new CompilerParameters { GenerateInMemory = true };
 
+            assemblies.AddRange(Settings.Instance.AlwaysIncludedAssemblies);
+
             assemblies.AddRange(
                 new List<string>
                 {
@@ -238,8 +240,6 @@ namespace Nurture.MCP.Editor.Services
                     "UnityEngine.AudioModule",
                     "UnityEngine.DirectorModule",
                     "UnityEngine.ParticleSystemModule",
-                    "Unity.InputSystem",
-                    "Nurture",
                     "Assembly-CSharp",
                 }
             );
