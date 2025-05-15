@@ -261,9 +261,14 @@ namespace Nurture.MCP.Editor.Services
 
             foreach (var assemblyName in assemblies)
             {
-                var assembly =
-                    TypeExtensions.FindAssembly(assemblyName)
-                    ?? throw new McpException($"Assembly {assemblyName} not found");
+                var assembly = TypeExtensions.FindAssembly(assemblyName);
+
+                if (assembly == null)
+                {
+                    Debug.LogWarning($"[MCP] Assembly {assemblyName} not found");
+                    continue;
+                }
+
                 if (!options.ReferencedAssemblies.Contains(assembly.Location))
                 {
                     options.ReferencedAssemblies.Add(assembly.Location);
