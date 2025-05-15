@@ -1,10 +1,12 @@
-
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Nurture.MCP.Editor
 {
-    [CreateAssetMenu(fileName = "Assets/Settings/UnityMCPSettings.asset", menuName = "MCP/Settings")]
+    [CreateAssetMenu(
+        fileName = "Assets/Settings/UnityMCPSettings.asset",
+        menuName = "MCP/Settings"
+    )]
     public class Settings : ScriptableObject
     {
         [SerializeField]
@@ -18,7 +20,8 @@ namespace Nurture.MCP.Editor
             get
             {
                 var settings = AssetDatabase.LoadAssetAtPath<Settings>(
-                    "Assets/Settings/UnityMCPSettings.asset");
+                    "Assets/Settings/UnityMCPSettings.asset"
+                );
                 if (settings == null)
                 {
                     settings = CreateInstance<Settings>();
