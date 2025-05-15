@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed references to non-builtin packages
 
+- Added missing required `System.Runtime.CompilerServices.Unsafe.dll`.
+
 ## [0.1.3] - 2025-05-08
 
 ### Added

@@ -20,10 +20,6 @@
 3. Enter `https://github.com/nurture-tech/unity-mcp-playground.git#main`.
 4. Click **Install**.
 
-### Allow 'unsafe' code
-
-1. In **Player Settings** -> **Other settings**, check the **Allow 'unsafe' code** checkbox.
-
 ## Configuring Cursor
 
 ### Configure `mcp.json`.
