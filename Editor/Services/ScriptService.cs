@@ -225,7 +225,10 @@ namespace Nurture.MCP.Editor.Services
             // Use Mono's built-in compiler
             var options = new CompilerParameters { GenerateInMemory = true };
 
-            assemblies.AddRange(Settings.Instance.AlwaysIncludedAssemblies);
+            if (Settings.Instance.AlwaysIncludedAssemblies != null)
+            {
+                assemblies.AddRange(Settings.Instance.AlwaysIncludedAssemblies);
+            }
 
             assemblies.AddRange(
                 new List<string>
