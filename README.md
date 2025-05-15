@@ -11,7 +11,24 @@
 
 * Supports image interpretation based on testing. Use these models to manipulate visuals where it can benefit from visual feedback of what's in the scene.
 
-## Configuring mcp.json
+## Configuring Unity
+
+### Install the Package in Unity Package Manager.
+
+1. Open the Unity Package Manager window.
+2. Choose **+** -> **Install package from Git URL**,
+3. Enter `https://github.com/nurture-tech/unity-mcp-playground.git#main`.
+4. Click **Install**.
+
+### Allow 'unsafe' code
+
+1. In **Player Settings** -> **Other settings**, check the **Allow 'unsafe' code** checkbox.
+
+## Configuring Cursor
+
+### Configure `mcp.json`.
+
+Add to or create `.cursor/mcp.json`:
 
 ```
 {
@@ -25,7 +42,7 @@
 }
 ```
 
-## Configuring a Custom Cursor Agent
+### Configuring a Custom Cursor Agent
 
 1. Open Cursor settings (Ctrl+Comma or Cmd+Comma).
 2. Navigate to the "Features" -> "Agent" section.
