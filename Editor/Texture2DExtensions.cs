@@ -1,5 +1,3 @@
-#if USE_MCP
-
 using System;
 using UnityEngine;
 
@@ -49,5 +47,3 @@ namespace Nurture.MCP.Editor
         }
     }
 }
-
-#endif

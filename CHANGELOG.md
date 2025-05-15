@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## UNRELEASED
 
-### Fixed
+### Changed
 
-- Add `USE_MCP` to a couple of places that were missing it
+- Add `NO_MCP` to disable MCP instead of requiring adding `USE_MCP` to enable MCP.
+
+### Fixed
 
 - Removed references to non-builtin packages
 
