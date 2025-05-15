@@ -1,4 +1,4 @@
-#if USE_MCP
+#if !NO_MCP
 
 using System.Collections.Generic;
 using System.ComponentModel;
