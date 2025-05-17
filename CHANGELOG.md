@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Wait for preview to load before returning model asset so that the preview is returned reliably.
 
+- Return acknowledgement for `copy_asset` so that Cursor doesn't think the tool call failed when it actually succeeded.
+
 
 ## [0.2.0] - 2025-05-16
 

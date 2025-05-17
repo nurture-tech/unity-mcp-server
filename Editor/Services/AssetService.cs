@@ -390,7 +390,7 @@ namespace Nurture.MCP.Editor.Services
             Name = "copy_asset"
         )]
         [Description("Copy an asset to a new path.")]
-        internal static async Task CopyAsset(
+        internal static async Task<string> CopyAsset(
             SynchronizationContext context,
             IProgress<ProgressNotificationValue> progress,
             string oldPath,
@@ -403,6 +403,7 @@ namespace Nurture.MCP.Editor.Services
                 {
                     await EditorExtensions.EnsureNotPlaying(progress, cancellationToken, 0.1f);
                     AssetDatabase.CopyAsset(oldPath, newPath);
+                    return $"Successfully copied asset from {oldPath} to {newPath}";
                 },
                 cancellationToken
             );
