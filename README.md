@@ -38,22 +38,21 @@ Add to or create `.cursor/mcp.json`:
 }
 ```
 
-### Configuring a Custom Cursor Agent
-
-1. Open Cursor settings (Ctrl+Comma or Cmd+Comma).
-2. Navigate to the "Features" -> "Agent" section.
-3. Click "Add Custom Model".
-4. Configure the model provider details as shown below:
-
-![Configuration Step 1](Docs/custom_cursor_agent_1.jpg)
-
-5. Configure the advanced settings like this:
-
-![Configuration Step 2](Docs/custom_cursor_agent_2.jpg)
-
 
 ## Usage Tips
 
 * Split your desktop with your chat agent on one side and the unity editor on the other side. The unity editor needs to be visible on screen or else the `screenshot` tool will fail to see the scene view.
 
 * The MCP server has some overhead in the Unity Editor. To turn off MCP for some time, add `NO_MCP` to the **Scripting Define Symbols** in **Player Settings**.
+
+* Add a rules file to `.cursor\rules\unity.mdc`:
+
+```
+- When editing an existing scene or prefab, open it first.
+
+- After creating a new scene, open it.
+
+- After creating or changing anything that will affect the visuals, take a screenshot and review your work to see if it looks visually correct. If it's wrong, adjust it before moving on.
+
+- Don't use generic file tools (edit_file, apply, copy, move, etc) when working with anything in the `Assets` folder.
+```
