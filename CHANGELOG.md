@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `get_state` returns whether the current stage is in prefab isolation mode or not.
 
+### Fixed
+
+- Wait for preview to load before returning model asset so that the preview is returned reliably.
+
 
 ## [0.2.0] - 2025-05-16
 
