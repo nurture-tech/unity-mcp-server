@@ -1,7 +1,7 @@
 #if !NO_MCP
 
 using UnityEditor;
-using ModelContextProtocol.Protocol.Types;
+using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 using UnityEngine;
 using System.Reflection;
@@ -10,6 +10,7 @@ using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System;
+using System.Threading.Tasks;
 using System.Text.Json.Nodes;
 
 namespace Nurture.MCP.Editor
@@ -57,6 +58,7 @@ namespace Nurture.MCP.Editor
             var toolOptions = new McpServerToolCreateOptions()
             {
                 Services = services,
+                /*
                 SchemaCreateOptions = new()
                 {
                     RequireAllProperties = false,
@@ -76,6 +78,7 @@ namespace Nurture.MCP.Editor
                         return node;
                     },
                 },
+                */
             };
 
             CollectTools(options, toolOptions);
@@ -123,14 +126,7 @@ namespace Nurture.MCP.Editor
                 {
                     if (toolMethod.GetCustomAttribute<McpServerToolAttribute>() is not null)
                     {
-                        var tool = toolMethod.IsStatic
-                            ? McpServerTool.Create(toolMethod, options: toolOptions)
-                            : McpServerTool.Create(
-                                toolMethod,
-                                targetType: toolType,
-                                options: toolOptions
-                            );
-
+                        var tool = McpServerTool.Create(toolMethod, options: toolOptions);
                         tools.ToolCollection.Add(tool);
                     }
                 }
@@ -180,9 +176,9 @@ namespace Nurture.MCP.Editor
             }
         }
 
-        private static void Stop()
+        private static async Task Stop()
         {
-            _httpServer?.Stop();
+            await _httpServer.Stop();
             _httpServer = null;
         }
     }

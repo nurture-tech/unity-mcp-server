@@ -39,6 +39,61 @@
             declarations.
             </remarks>
         </member>
+        <member name="M:System.Index.#ctor(System.Int32,System.Boolean)">
+            <summary>Construct an Index using a value and indicating if the index is from the start or from the end.</summary>
+            <param name="value">The index value. it has to be zero or positive number.</param>
+            <param name="fromEnd">Indicating if the index is from the start or from the end.</param>
+            <remarks>
+            If the Index constructed from the end, index value 1 means pointing at the last element and index value 0 means pointing at beyond last element.
+            </remarks>
+        </member>
+        <member name="P:System.Index.Start">
+            <summary>Create an Index pointing at first element.</summary>
+        </member>
+        <member name="P:System.Index.End">
+            <summary>Create an Index pointing at beyond last element.</summary>
+        </member>
+        <member name="M:System.Index.FromStart(System.Int32)">
+            <summary>Create an Index from the start at the position indicated by the value.</summary>
+            <param name="value">The index value from the start.</param>
+        </member>
+        <member name="M:System.Index.FromEnd(System.Int32)">
+            <summary>Create an Index from the end at the position indicated by the value.</summary>
+            <param name="value">The index value from the end.</param>
+        </member>
+        <member name="P:System.Index.Value">
+            <summary>Returns the index value.</summary>
+        </member>
+        <member name="P:System.Index.IsFromEnd">
+            <summary>Indicates whether the index is from the start or the end.</summary>
+        </member>
+        <member name="M:System.Index.GetOffset(System.Int32)">
+            <summary>Calculate the offset from the start using the giving collection length.</summary>
+            <param name="length">The length of the collection that the Index will be used with. length has to be a positive value.</param>
+            <remarks>
+            For performance reason, we don't validate the input length parameter and the returned offset value against negative values.
+            we don't validate either the returned offset is greater than the input length.
+            It is expected Index will be used with collections which always have non negative length/count. If the returned offset is negative and
+            then used to index a collection will get out of range exception which will be same affect as the validation.
+            </remarks>
+        </member>
+        <member name="M:System.Index.Equals(System.Object)">
+            <summary>Indicates whether the current Index object is equal to another object of the same type.</summary>
+            <param name="value">An object to compare with this object.</param>
+        </member>
+        <member name="M:System.Index.Equals(System.Index)">
+            <summary>Indicates whether the current Index object is equal to another Index object.</summary>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:System.Index.GetHashCode">
+            <summary>Returns the hash code for this instance.</summary>
+        </member>
+        <member name="M:System.Index.op_Implicit(System.Int32)~System.Index">
+            <summary>Converts integer number to an Index.</summary>
+        </member>
+        <member name="M:System.Index.ToString">
+            <summary>Converts the value of the current Index object to its equivalent string representation.</summary>
+        </member>
         <member name="T:System.Diagnostics.CodeAnalysis.AllowNullAttribute">
             <summary>Specifies that null is allowed as an input even if the corresponding type disallows it.</summary>
         </member>
@@ -1839,13 +1894,11 @@
         </member>
         <member name="T:Microsoft.Extensions.AI.ChatOptions">
             <summary>Represents the options for a chat request.</summary>
-        </member>
-        <member name="P:Microsoft.Extensions.AI.ChatOptions.ChatThreadId">
-            <summary>Gets or sets an optional identifier used to associate a request with an existing conversation.</summary>
-            <remarks>This property is obsolete. Use <see cref="P:Microsoft.Extensions.AI.ChatOptions.ConversationId"/> instead.</remarks>
+            <related type="Article" href="https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai#provide-options">Provide options.</related>
         </member>
         <member name="P:Microsoft.Extensions.AI.ChatOptions.ConversationId">
             <summary>Gets or sets an optional identifier used to associate a request with an existing conversation.</summary>
+            <related type="Article" href="https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai#stateless-vs-stateful-clients">Stateless vs. stateful clients.</related>
         </member>
         <member name="P:Microsoft.Extensions.AI.ChatOptions.Temperature">
             <summary>Gets or sets the temperature for generating chat responses.</summary>
@@ -1941,6 +1994,26 @@
         </member>
         <member name="P:Microsoft.Extensions.AI.ChatOptions.Tools">
             <summary>Gets or sets the list of tools to include with a chat request.</summary>
+            <related type="Article" href="https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai#tool-calling">Tool calling.</related>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.ChatOptions.RawRepresentationFactory">
+            <summary>
+            Gets or sets a callback responsible for creating the raw representation of the chat options from an underlying implementation.
+            </summary>
+            <remarks>
+            The underlying <see cref="T:Microsoft.Extensions.AI.IChatClient" /> implementation may have its own representation of options.
+            When <see cref="M:Microsoft.Extensions.AI.IChatClient.GetResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)" /> or <see cref="M:Microsoft.Extensions.AI.IChatClient.GetStreamingResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)" />
+            is invoked with a <see cref="T:Microsoft.Extensions.AI.ChatOptions" />, that implementation may convert the provided options into
+            its own representation in order to use it while performing the operation. For situations where a consumer knows
+            which concrete <see cref="T:Microsoft.Extensions.AI.IChatClient" /> is being used and how it represents options, a new instance of that
+            implementation-specific options type may be returned by this callback, for the <see cref="T:Microsoft.Extensions.AI.IChatClient" />
+            implementation to use instead of creating a new instance. Such implementations may mutate the supplied options
+            instance further based on other settings supplied on this <see cref="T:Microsoft.Extensions.AI.ChatOptions" /> instance or from other inputs,
+            like the enumerable of <see cref="T:Microsoft.Extensions.AI.ChatMessage"/>s, therefore, it is <b>strongly recommended</b> to not return shared instances
+            and instead make the callback return a new instance on each call.
+            This is typically used to set an implementation-specific setting that isn't otherwise exposed from the strongly-typed
+            properties on <see cref="T:Microsoft.Extensions.AI.ChatOptions" />.
+            </remarks>
         </member>
         <member name="P:Microsoft.Extensions.AI.ChatOptions.AdditionalProperties">
             <summary>Gets or sets any additional properties associated with the options.</summary>
@@ -1992,19 +2065,6 @@
         <member name="P:Microsoft.Extensions.AI.ChatResponse.ResponseId">
             <summary>Gets or sets the ID of the chat response.</summary>
         </member>
-        <member name="P:Microsoft.Extensions.AI.ChatResponse.ChatThreadId">
-            <summary>Gets or sets an identifier for the state of the conversation.</summary>
-            <remarks>
-            Some <see cref="T:Microsoft.Extensions.AI.IChatClient"/> implementations are capable of storing the state for a conversation, such that
-            the input messages supplied to <see cref="M:Microsoft.Extensions.AI.IChatClient.GetResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)"/> need only be the additional messages beyond
-            what's already stored. If this property is non-<see langword="null"/>, it represents an identifier for that state,
-            and it should be used in a subsequent <see cref="P:Microsoft.Extensions.AI.ChatOptions.ConversationId"/> instead of supplying the same messages
-            (and this <see cref="T:Microsoft.Extensions.AI.ChatResponse"/>'s message) as part of the <c>messages</c> parameter. Note that the value may
-            or may not differ on every response, depending on whether the underlying provider uses a fixed ID for each conversation
-            or updates it for each message.
-            </remarks>
-            <remarks>This method is obsolete. Use <see cref="P:Microsoft.Extensions.AI.ChatResponse.ConversationId"/> instead.</remarks>
-        </member>
         <member name="P:Microsoft.Extensions.AI.ChatResponse.ConversationId">
             <summary>Gets or sets an identifier for the state of the conversation.</summary>
             <remarks>
@@ -2016,6 +2076,7 @@
             or may not differ on every response, depending on whether the underlying provider uses a fixed ID for each conversation
             or updates it for each message.
             </remarks>
+            <related type="Article" href="https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai#stateless-vs-stateful-clients">Stateless vs. stateful clients.</related>
         </member>
         <member name="P:Microsoft.Extensions.AI.ChatResponse.ModelId">
             <summary>Gets or sets the model ID used in the creation of the chat response.</summary>
@@ -2277,18 +2338,6 @@
              all updates that are part of the same logical message within a streaming response.
              </remarks>
         </member>
-        <member name="P:Microsoft.Extensions.AI.ChatResponseUpdate.ChatThreadId">
-            <summary>Gets or sets an identifier for the state of the conversation of which this update is a part.</summary>
-            <remarks>
-            Some <see cref="T:Microsoft.Extensions.AI.IChatClient"/> implementations are capable of storing the state for a conversation, such that
-            the input messages supplied to <see cref="M:Microsoft.Extensions.AI.IChatClient.GetStreamingResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)"/> need only be the additional messages beyond
-            what's already stored. If this property is non-<see langword="null"/>, it represents an identifier for that state,
-            and it should be used in a subsequent <see cref="P:Microsoft.Extensions.AI.ChatOptions.ConversationId"/> instead of supplying the same messages
-            (and this streaming message) as part of the <c>messages</c> parameter. Note that the value may or may not differ on every
-            response, depending on whether the underlying provider uses a fixed ID for each conversation or updates it for each message.
-            </remarks>
-            <remarks>This method is obsolete. Use <see cref="P:Microsoft.Extensions.AI.ChatResponseUpdate.ConversationId"/> instead.</remarks>
-        </member>
         <member name="P:Microsoft.Extensions.AI.ChatResponseUpdate.ConversationId">
             <summary>Gets or sets an identifier for the state of the conversation of which this update is a part.</summary>
             <remarks>
@@ -2445,6 +2494,7 @@
             This is recommended as a base type when building clients that can be chained around an underlying <see cref="T:Microsoft.Extensions.AI.IChatClient"/>.
             The default implementation simply passes each call to the inner client instance.
             </remarks>
+            <related type="Article" href="https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai#custom-ichatclient-middleware">Custom IChatClient middleware.</related>
         </member>
         <member name="M:Microsoft.Extensions.AI.DelegatingChatClient.#ctor(Microsoft.Extensions.AI.IChatClient)">
             <summary>
@@ -2475,6 +2525,11 @@
             <summary>Represents a chat client.</summary>
             <remarks>
             <para>
+            Applications must consider risks such as prompt injection attacks, data sizes, and the number of messages
+            sent to the underlying provider or returned from it. Unless a specific <see cref="T:Microsoft.Extensions.AI.IChatClient"/> implementation
+            explicitly documents safeguards for these concerns, the application is expected to implement appropriate protections.
+            </para>
+            <para>
             Unless otherwise specified, all members of <see cref="T:Microsoft.Extensions.AI.IChatClient"/> are thread-safe for concurrent use.
             It is expected that all implementations of <see cref="T:Microsoft.Extensions.AI.IChatClient"/> support being used by multiple requests concurrently.
             Instances must not be disposed of while the instance is still in use.
@@ -2488,6 +2543,7 @@
             </para>
             </remarks>
             <related type="Article" href="https://learn.microsoft.com/dotnet/ai/quickstarts/build-chat-app">Build an AI chat app with .NET.</related>
+            <related type="Article" href="https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai#the-ichatclient-interface">The IChatClient interface.</related>
         </member>
         <member name="M:Microsoft.Extensions.AI.IChatClient.GetResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)">
             <summary>Sends chat messages and returns the response.</summary>
@@ -2496,6 +2552,7 @@
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests. The default is <see cref="P:System.Threading.CancellationToken.None"/>.</param>
             <returns>The response messages generated by the client.</returns>
             <exception cref="T:System.ArgumentNullException"><paramref name="messages"/> is <see langword="null"/>.</exception>
+            <related type="Article" href="https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai#request-a-chat-response">Request a chat response.</related>
         </member>
         <member name="M:Microsoft.Extensions.AI.IChatClient.GetStreamingResponseAsync(System.Collections.Generic.IEnumerable{Microsoft.Extensions.AI.ChatMessage},Microsoft.Extensions.AI.ChatOptions,System.Threading.CancellationToken)">
             <summary>Sends chat messages and streams the response.</summary>
@@ -2504,6 +2561,7 @@
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests. The default is <see cref="P:System.Threading.CancellationToken.None"/>.</param>
             <returns>The response messages generated by the client.</returns>
             <exception cref="T:System.ArgumentNullException"><paramref name="messages"/> is <see langword="null"/>.</exception>
+            <related type="Article" href="https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai#request-a-streaming-chat-response">Request a streaming chat response.</related>
         </member>
         <member name="M:Microsoft.Extensions.AI.IChatClient.GetService(System.Type,System.Object)">
             <summary>Asks the <see cref="T:Microsoft.Extensions.AI.IChatClient"/> for an object of the specified type <paramref name="serviceType"/>.</summary>
@@ -2671,9 +2729,8 @@
         <member name="P:Microsoft.Extensions.AI.DataContent.Uri">
             <summary>Gets the data URI for this <see cref="T:Microsoft.Extensions.AI.DataContent"/>.</summary>
             <remarks>
-            The returned URI is always a valid URI string, even if the instance was constructed from a <see cref="T:System.ReadOnlyMemory`1"/>
-            or from a <see cref="T:System.Uri"/>. In the case of a <see cref="T:System.ReadOnlyMemory`1"/>, this property returns a data URI containing
-            that data.
+            The returned URI is always a valid data URI string, even if the instance was constructed from a <see cref="T:System.ReadOnlyMemory`1"/>
+            or from a <see cref="T:System.Uri"/>.
             </remarks>
         </member>
         <member name="P:Microsoft.Extensions.AI.DataContent.MediaType">
@@ -2693,6 +2750,10 @@
             data can be found but doesn't actually contain the data, this property returns <see langword="null"/>;
             no attempt is made to retrieve the data from that URI.
             </remarks>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.DataContent.Base64Data">
+            <summary>Gets the data represented by this instance as a Base64 character sequence.</summary>
+            <returns>The base64 representation of the data.</returns>
         </member>
         <member name="P:Microsoft.Extensions.AI.DataContent.DebuggerDisplay">
             <summary>Gets a string representing this instance to display in the debugger.</summary>
@@ -2972,6 +3033,32 @@
         <member name="P:Microsoft.Extensions.AI.UsageContent.DebuggerDisplay">
             <summary>Gets a string representing this instance to display in the debugger.</summary>
         </member>
+        <member name="T:Microsoft.Extensions.AI.BinaryEmbedding">
+            <summary>Represents an embedding composed of a bit vector.</summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.BinaryEmbedding._vector">
+            <summary>The embedding vector this embedding represents.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.BinaryEmbedding.#ctor(System.Collections.BitArray)">
+            <summary>Initializes a new instance of the <see cref="T:Microsoft.Extensions.AI.BinaryEmbedding"/> class with the embedding vector.</summary>
+            <param name="vector">The embedding vector this embedding represents.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vector"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.BinaryEmbedding.Vector">
+            <summary>Gets or sets the embedding vector this embedding represents.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.BinaryEmbedding.Dimensions">
+            <inheritdoc />
+        </member>
+        <member name="T:Microsoft.Extensions.AI.BinaryEmbedding.VectorConverter">
+            <summary>Provides a <see cref="T:System.Text.Json.Serialization.JsonConverter`1"/> for serializing <see cref="T:System.Collections.BitArray"/> instances.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.BinaryEmbedding.VectorConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.BinaryEmbedding.VectorConverter.Write(System.Text.Json.Utf8JsonWriter,System.Collections.BitArray,System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
         <member name="T:Microsoft.Extensions.AI.DelegatingEmbeddingGenerator`2">
             <summary>
             Provides an optional base class for an <see cref="T:Microsoft.Extensions.AI.IEmbeddingGenerator`2"/> that passes through calls to another instance.
@@ -3015,6 +3102,12 @@
         <member name="P:Microsoft.Extensions.AI.Embedding.CreatedAt">
             <summary>Gets or sets a timestamp at which the embedding was created.</summary>
         </member>
+        <member name="P:Microsoft.Extensions.AI.Embedding.Dimensions">
+            <summary>Gets the dimensionality of the embedding vector.</summary>
+            <remarks>
+            This value corresponds to the number of elements in the embedding vector.
+            </remarks>
+        </member>
         <member name="P:Microsoft.Extensions.AI.Embedding.ModelId">
             <summary>Gets or sets the model ID using in the creation of the embedding.</summary>
         </member>
@@ -3032,6 +3125,24 @@
         </member>
         <member name="P:Microsoft.Extensions.AI.EmbeddingGenerationOptions.AdditionalProperties">
             <summary>Gets or sets additional properties for the embedding generation request.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.EmbeddingGenerationOptions.RawRepresentationFactory">
+            <summary>
+            Gets or sets a callback responsible for creating the raw representation of the embedding generation options from an underlying implementation.
+            </summary>
+            <remarks>
+            The underlying <see cref="T:Microsoft.Extensions.AI.IEmbeddingGenerator" /> implementation may have its own representation of options.
+            When <see cref="M:Microsoft.Extensions.AI.IEmbeddingGenerator`2.GenerateAsync(System.Collections.Generic.IEnumerable{`0},Microsoft.Extensions.AI.EmbeddingGenerationOptions,System.Threading.CancellationToken)" /> 
+            is invoked with an <see cref="T:Microsoft.Extensions.AI.EmbeddingGenerationOptions" />, that implementation may convert the provided options into
+            its own representation in order to use it while performing the operation. For situations where a consumer knows
+            which concrete <see cref="T:Microsoft.Extensions.AI.IEmbeddingGenerator" /> is being used and how it represents options, a new instance of that
+            implementation-specific options type may be returned by this callback, for the <see cref="T:Microsoft.Extensions.AI.IEmbeddingGenerator" />
+            implementation to use instead of creating a new instance. Such implementations may mutate the supplied options
+            instance further based on other settings supplied on this <see cref="T:Microsoft.Extensions.AI.EmbeddingGenerationOptions" /> instance or from other inputs,
+            therefore, it is <b>strongly recommended</b> to not return shared instances and instead make the callback return a new instance on each call.
+            This is typically used to set an implementation-specific setting that isn't otherwise exposed from the strongly-typed
+            properties on <see cref="T:Microsoft.Extensions.AI.EmbeddingGenerationOptions" />.
+            </remarks>
         </member>
         <member name="M:Microsoft.Extensions.AI.EmbeddingGenerationOptions.Clone">
             <summary>Produces a clone of the current <see cref="T:Microsoft.Extensions.AI.EmbeddingGenerationOptions"/> instance.</summary>
@@ -3089,26 +3200,6 @@
             <see cref="T:Microsoft.Extensions.AI.IEmbeddingGenerator`2"/>, including itself or any services it might be wrapping.
             </remarks>
         </member>
-        <member name="M:Microsoft.Extensions.AI.EmbeddingGeneratorExtensions.GenerateEmbeddingVectorAsync``2(Microsoft.Extensions.AI.IEmbeddingGenerator{``0,Microsoft.Extensions.AI.Embedding{``1}},``0,Microsoft.Extensions.AI.EmbeddingGenerationOptions,System.Threading.CancellationToken)">
-            <summary>Generates an embedding vector from the specified <paramref name="value"/>.</summary>
-            <typeparam name="TInput">The type from which embeddings will be generated.</typeparam>
-            <typeparam name="TEmbeddingElement">The numeric type of the embedding data.</typeparam>
-            <param name="generator">The embedding generator.</param>
-            <param name="value">A value from which an embedding will be generated.</param>
-            <param name="options">The embedding generation options to configure the request.</param>
-            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests. The default is <see cref="P:System.Threading.CancellationToken.None"/>.</param>
-            <returns>The generated embedding for the specified <paramref name="value"/>.</returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="generator"/> is <see langword="null"/>.</exception>
-            <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
-            <exception cref="T:System.InvalidOperationException">The generator did not produce exactly one embedding.</exception>
-            <remarks>
-            This operation is equivalent to using <see cref="M:Microsoft.Extensions.AI.EmbeddingGeneratorExtensions.GenerateAsync``2(Microsoft.Extensions.AI.IEmbeddingGenerator{``0,``1},``0,Microsoft.Extensions.AI.EmbeddingGenerationOptions,System.Threading.CancellationToken)"/> and returning the
-            resulting <see cref="T:Microsoft.Extensions.AI.Embedding`1"/>'s <see cref="P:Microsoft.Extensions.AI.Embedding`1.Vector"/> property.
-            </remarks>
-            <remarks>
-            This method is obsolete. Use <see cref="M:Microsoft.Extensions.AI.EmbeddingGeneratorExtensions.GenerateVectorAsync``2(Microsoft.Extensions.AI.IEmbeddingGenerator{``0,Microsoft.Extensions.AI.Embedding{``1}},``0,Microsoft.Extensions.AI.EmbeddingGenerationOptions,System.Threading.CancellationToken)"/> instead.
-            </remarks>
-        </member>
         <member name="M:Microsoft.Extensions.AI.EmbeddingGeneratorExtensions.GenerateVectorAsync``2(Microsoft.Extensions.AI.IEmbeddingGenerator{``0,Microsoft.Extensions.AI.Embedding{``1}},``0,Microsoft.Extensions.AI.EmbeddingGenerationOptions,System.Threading.CancellationToken)">
             <summary>Generates an embedding vector from the specified <paramref name="value"/>.</summary>
             <typeparam name="TInput">The type from which embeddings will be generated.</typeparam>
@@ -3124,29 +3215,6 @@
             <remarks>
             This operation is equivalent to using <see cref="M:Microsoft.Extensions.AI.EmbeddingGeneratorExtensions.GenerateAsync``2(Microsoft.Extensions.AI.IEmbeddingGenerator{``0,``1},``0,Microsoft.Extensions.AI.EmbeddingGenerationOptions,System.Threading.CancellationToken)"/> and returning the
             resulting <see cref="T:Microsoft.Extensions.AI.Embedding`1"/>'s <see cref="P:Microsoft.Extensions.AI.Embedding`1.Vector"/> property.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Extensions.AI.EmbeddingGeneratorExtensions.GenerateEmbeddingAsync``2(Microsoft.Extensions.AI.IEmbeddingGenerator{``0,``1},``0,Microsoft.Extensions.AI.EmbeddingGenerationOptions,System.Threading.CancellationToken)">
-            <summary>Generates an embedding from the specified <paramref name="value"/>.</summary>
-            <typeparam name="TInput">The type from which embeddings will be generated.</typeparam>
-            <typeparam name="TEmbedding">The type of embedding to generate.</typeparam>
-            <param name="generator">The embedding generator.</param>
-            <param name="value">A value from which an embedding will be generated.</param>
-            <param name="options">The embedding generation options to configure the request.</param>
-            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests. The default is <see cref="P:System.Threading.CancellationToken.None"/>.</param>
-            <returns>
-            The generated embedding for the specified <paramref name="value"/>.
-            </returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="generator"/> is <see langword="null"/>.</exception>
-            <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
-            <exception cref="T:System.InvalidOperationException">The generator did not produce exactly one embedding.</exception>
-            <remarks>
-            This operations is equivalent to using <see cref="M:Microsoft.Extensions.AI.IEmbeddingGenerator`2.GenerateAsync(System.Collections.Generic.IEnumerable{`0},Microsoft.Extensions.AI.EmbeddingGenerationOptions,System.Threading.CancellationToken)"/> with a
-            collection composed of the single <paramref name="value"/> and then returning the first embedding element from the
-            resulting <see cref="T:Microsoft.Extensions.AI.GeneratedEmbeddings`1"/> collection.
-            </remarks>
-            <remarks>
-            This method is obsolete. Use <see cref="M:Microsoft.Extensions.AI.EmbeddingGeneratorExtensions.GenerateAsync``2(Microsoft.Extensions.AI.IEmbeddingGenerator{``0,``1},``0,Microsoft.Extensions.AI.EmbeddingGenerationOptions,System.Threading.CancellationToken)"/> instead.
             </remarks>
         </member>
         <member name="M:Microsoft.Extensions.AI.EmbeddingGeneratorExtensions.GenerateAsync``2(Microsoft.Extensions.AI.IEmbeddingGenerator{``0,``1},``0,Microsoft.Extensions.AI.EmbeddingGenerationOptions,System.Threading.CancellationToken)">
@@ -3233,6 +3301,9 @@
         </member>
         <member name="P:Microsoft.Extensions.AI.Embedding`1.Vector">
             <summary>Gets or sets the embedding vector this embedding represents.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.Embedding`1.Dimensions">
+            <inheritdoc />
         </member>
         <member name="T:Microsoft.Extensions.AI.GeneratedEmbeddings`1">
             <summary>Represents the result of an operation to generate embeddings.</summary>
@@ -3341,6 +3412,7 @@
             no <see cref="T:Microsoft.Extensions.AI.IEmbeddingGenerator`2"/> instances are used which might employ such mutation.
             </para>
             </remarks>
+            <related type="Article" href="https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai#the-iembeddinggenerator-interface">The IEmbeddingGenerator interface.</related>
         </member>
         <member name="M:Microsoft.Extensions.AI.IEmbeddingGenerator`2.GenerateAsync(System.Collections.Generic.IEnumerable{`0},Microsoft.Extensions.AI.EmbeddingGenerationOptions,System.Threading.CancellationToken)">
             <summary>Generates embeddings for each of the supplied <paramref name="values"/>.</summary>
@@ -3349,6 +3421,7 @@
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests. The default is <see cref="P:System.Threading.CancellationToken.None"/>.</param>
             <returns>The generated embeddings.</returns>
             <exception cref="T:System.ArgumentNullException"><paramref name="values"/> is <see langword="null"/>.</exception>
+            <related type="Article" href="https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai#create-embeddings">Create embeddings.</related>
         </member>
         <member name="T:Microsoft.Extensions.AI.AIFunction">
             <summary>Represents a function that can be described to an AI service and invoked.</summary>
@@ -3519,6 +3592,567 @@
         </member>
         <member name="M:Microsoft.Extensions.AI.AIFunctionArguments.System#Collections#IEnumerable#GetEnumerator">
             <inheritdoc />
+        </member>
+        <member name="T:Microsoft.Extensions.AI.AIFunctionFactory">
+            <summary>Provides factory methods for creating commonly-used implementations of <see cref="T:Microsoft.Extensions.AI.AIFunction"/>.</summary>
+            <related type="Article" href="https://learn.microsoft.com/dotnet/ai/quickstarts/use-function-calling">Invoke .NET functions using an AI model.</related>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.AIFunctionFactory._defaultOptions">
+            <summary>Holds the default options instance used when creating function.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.Create(System.Delegate,Microsoft.Extensions.AI.AIFunctionFactoryOptions)">
+            <summary>Creates an <see cref="T:Microsoft.Extensions.AI.AIFunction"/> instance for a method, specified via a delegate.</summary>
+            <param name="method">The method to be represented via the created <see cref="T:Microsoft.Extensions.AI.AIFunction"/>.</param>
+            <param name="options">Metadata to use to override defaults inferred from <paramref name="method"/>.</param>
+            <returns>The created <see cref="T:Microsoft.Extensions.AI.AIFunction"/> for invoking <paramref name="method"/>.</returns>
+            <remarks>
+            <para>
+            By default, any parameters to <paramref name="method"/> are sourced from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s dictionary
+            of key/value pairs and are represented in the JSON schema for the function, as exposed in the returned <see cref="T:Microsoft.Extensions.AI.AIFunction"/>'s
+            <see cref="P:Microsoft.Extensions.AI.AIFunction.JsonSchema"/>. There are a few exceptions to this:
+            <list type="bullet">
+              <item>
+                <description>
+                  <see cref="T:System.Threading.CancellationToken"/> parameters are automatically bound to the <see cref="T:System.Threading.CancellationToken"/> passed into
+                  the invocation via <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/>'s <see cref="T:System.Threading.CancellationToken"/> parameter. The parameter is
+                  not included in the generated JSON schema. The behavior of <see cref="T:System.Threading.CancellationToken"/> parameters may not be overridden.
+                </description>
+              </item>
+              <item>
+                <description>
+                  By default, <see cref="T:System.IServiceProvider"/> parameters are bound from the <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/> property
+                  and are not included in the JSON schema. If the parameter is optional, such that a default value is provided,
+                  <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/> is allowed to be <see langword="null"/>; otherwise, <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/>
+                  must be non-<see langword="null"/>, or else the invocation will fail with an exception due to the required nature of the parameter.
+                  The handling of <see cref="T:System.IServiceProvider"/> parameters may be overridden via <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/>.
+                </description>
+              </item>
+              <item>
+                <description>
+                  By default, <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> parameters are bound directly to <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> instance
+                  passed into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> and are not included in the JSON schema. If the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>
+                  instance passed to <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> is <see langword="null"/>, the <see cref="T:Microsoft.Extensions.AI.AIFunction"/> implementation
+                  manufactures an empty instance, such that parameters of type <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> may always be satisfied, whether
+                  optional or not. The handling of <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> parameters may be overridden via
+                  <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/>.
+                </description>
+              </item>
+            </list>
+            All other parameter types are, by default, bound from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary passed into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/>
+            and are included in the generated JSON schema. This may be overridden by the <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/> provided
+            via the <paramref name="options"/> parameter; for every parameter, the delegate is enabled to choose if the parameter should be included in the
+            generated schema and how its value should be bound, including handling of optionality (by default, required parameters that are not included in the
+            <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary will result in an exception being thrown). Loosely-typed additional context information may be passed
+            into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> via the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Context"/> dictionary; the default
+            binding ignores this collection, but a custom binding supplied via <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/> may choose to
+            source arguments from this data.
+            </para>
+            <para>
+            The default marshaling of parameters from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary permits values to be passed into the <paramref name="method"/>'s
+            invocation directly if the object is already of a compatible type. Otherwise, if the argument is a <see cref="T:System.Text.Json.JsonElement"/>, <see cref="T:System.Text.Json.JsonDocument"/>,
+            or <see cref="T:System.Text.Json.Nodes.JsonNode"/>, it is deserialized into the parameter type, utilizing <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.SerializerOptions"/> if provided,
+            or else using <see cref="P:Microsoft.Extensions.AI.AIJsonUtilities.DefaultOptions"/>. If the argument is anything else, it is round-tripped through JSON, serializing the object as JSON
+            and then deserializing it to the expected type.
+            </para>
+            <para>
+            In general, the data supplied via an <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s dictionary is supplied from an AI service and should be considered
+            unvalidated and untrusted. To provide validated and trusted data to the invocation of <paramref name="method"/>, consider having <paramref name="method"/>
+            point to an instance method on an instance configured to hold the appropriate state. An <see cref="T:System.IServiceProvider"/> parameter may also be
+            used to resolve services from a dependency injection container.
+            </para>
+            <para>
+            By default, return values are serialized to <see cref="T:System.Text.Json.JsonElement"/> using <paramref name="options"/>'s
+            <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.SerializerOptions"/> if provided, or else using <see cref="P:Microsoft.Extensions.AI.AIJsonUtilities.DefaultOptions"/>.
+            Handling of return values may be overridden via <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.MarshalResult"/>.
+            </para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"><paramref name="method"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.Text.Json.JsonException">A parameter to <paramref name="method"/> is not serializable.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.Create(System.Delegate,System.String,System.String,System.Text.Json.JsonSerializerOptions)">
+            <summary>Creates an <see cref="T:Microsoft.Extensions.AI.AIFunction"/> instance for a method, specified via a delegate.</summary>
+            <param name="method">The method to be represented via the created <see cref="T:Microsoft.Extensions.AI.AIFunction"/>.</param>
+            <param name="name">
+            The name to use for the <see cref="T:Microsoft.Extensions.AI.AIFunction"/>. If <see langword="null"/>, the name will be derived from
+            the name of <paramref name="method"/>.
+            </param>
+            <param name="description">
+            The description to use for the <see cref="T:Microsoft.Extensions.AI.AIFunction"/>. If <see langword="null"/>, a description will be derived from
+            any <see cref="T:System.ComponentModel.DescriptionAttribute"/> on <paramref name="method"/>, if available.
+            </param>
+            <param name="serializerOptions">The <see cref="T:System.Text.Json.JsonSerializerOptions"/> used to marshal function parameters and any return value.</param>
+            <returns>The created <see cref="T:Microsoft.Extensions.AI.AIFunction"/> for invoking <paramref name="method"/>.</returns>
+            <remarks>
+            <para>
+            Any parameters to <paramref name="method"/> are sourced from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s dictionary
+            of key/value pairs and are represented in the JSON schema for the function, as exposed in the returned <see cref="T:Microsoft.Extensions.AI.AIFunction"/>'s
+            <see cref="P:Microsoft.Extensions.AI.AIFunction.JsonSchema"/>. There are a few exceptions to this:
+            <list type="bullet">
+              <item>
+                <description>
+                  <see cref="T:System.Threading.CancellationToken"/> parameters are automatically bound to the <see cref="T:System.Threading.CancellationToken"/> passed into
+                  the invocation via <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/>'s <see cref="T:System.Threading.CancellationToken"/> parameter. The parameter is
+                  not included in the generated JSON schema.
+                </description>
+              </item>
+              <item>
+                <description>
+                  By default, <see cref="T:System.IServiceProvider"/> parameters are bound from the <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/> property
+                  and are not included in the JSON schema. If the parameter is optional, such that a default value is provided,
+                  <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/> is allowed to be <see langword="null"/>; otherwise, <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/>
+                  must be non-<see langword="null"/>, or else the invocation will fail with an exception due to the required nature of the parameter.
+                </description>
+              </item>
+              <item>
+                <description>
+                  By default, <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> parameters are bound directly to <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> instance
+                  passed into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> and are not included in the JSON schema. If the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>
+                  instance passed to <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> is <see langword="null"/>, the <see cref="T:Microsoft.Extensions.AI.AIFunction"/> implementation
+                  manufactures an empty instance, such that parameters of type <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> may always be satisfied, whether
+                  optional or not.
+                </description>
+              </item>
+            </list>
+            All other parameter types are bound from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary passed into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/>
+            and are included in the generated JSON schema.
+            </para>
+            <para>
+            The marshaling of parameters from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary permits values to be passed into the <paramref name="method"/>'s
+            invocation directly if the object is already of a compatible type. Otherwise, if the argument is a <see cref="T:System.Text.Json.JsonElement"/>, <see cref="T:System.Text.Json.JsonDocument"/>,
+            or <see cref="T:System.Text.Json.Nodes.JsonNode"/>, it is deserialized into the parameter type, utilizing <paramref name="serializerOptions"/> if provided, or else
+            <see cref="P:Microsoft.Extensions.AI.AIJsonUtilities.DefaultOptions"/>. If the argument is anything else, it is round-tripped through JSON, serializing the object as JSON
+            and then deserializing it to the expected type.
+            </para>
+            <para>
+            In general, the data supplied via an <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s dictionary is supplied from an AI service and should be considered
+            unvalidated and untrusted. To provide validated and trusted data to the invocation of <paramref name="method"/>, consider having <paramref name="method"/>
+            point to an instance method on an instance configured to hold the appropriate state. An <see cref="T:System.IServiceProvider"/> parameter may also be
+            used to resolve services from a dependency injection container.
+            </para>
+            <para>
+            Return values are serialized to <see cref="T:System.Text.Json.JsonElement"/> using <paramref name="serializerOptions"/> if provided,
+            or else using <see cref="P:Microsoft.Extensions.AI.AIJsonUtilities.DefaultOptions"/>.
+            </para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"><paramref name="method"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.Text.Json.JsonException">A parameter to <paramref name="method"/> is not serializable.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.Create(System.Reflection.MethodInfo,System.Object,Microsoft.Extensions.AI.AIFunctionFactoryOptions)">
+            <summary>
+            Creates an <see cref="T:Microsoft.Extensions.AI.AIFunction"/> instance for a method, specified via an <see cref="T:System.Reflection.MethodInfo"/> instance
+            and an optional target object if the method is an instance method.
+            </summary>
+            <param name="method">The method to be represented via the created <see cref="T:Microsoft.Extensions.AI.AIFunction"/>.</param>
+            <param name="target">
+            The target object for the <paramref name="method"/> if it represents an instance method.
+            This should be <see langword="null"/> if and only if <paramref name="method"/> is a static method.
+            </param>
+            <param name="options">Metadata to use to override defaults inferred from <paramref name="method"/>.</param>
+            <returns>The created <see cref="T:Microsoft.Extensions.AI.AIFunction"/> for invoking <paramref name="method"/>.</returns>
+            <remarks>
+            <para>
+            By default, any parameters to <paramref name="method"/> are sourced from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s dictionary
+            of key/value pairs and are represented in the JSON schema for the function, as exposed in the returned <see cref="T:Microsoft.Extensions.AI.AIFunction"/>'s
+            <see cref="P:Microsoft.Extensions.AI.AIFunction.JsonSchema"/>. There are a few exceptions to this:
+            <list type="bullet">
+              <item>
+                <description>
+                  <see cref="T:System.Threading.CancellationToken"/> parameters are automatically bound to the <see cref="T:System.Threading.CancellationToken"/> passed into
+                  the invocation via <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/>'s <see cref="T:System.Threading.CancellationToken"/> parameter. The parameter is
+                  not included in the generated JSON schema. The behavior of <see cref="T:System.Threading.CancellationToken"/> parameters may not be overridden.
+                </description>
+              </item>
+              <item>
+                <description>
+                  By default, <see cref="T:System.IServiceProvider"/> parameters are bound from the <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/> property
+                  and are not included in the JSON schema. If the parameter is optional, such that a default value is provided,
+                  <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/> is allowed to be <see langword="null"/>; otherwise, <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/>
+                  must be non-<see langword="null"/>, or else the invocation will fail with an exception due to the required nature of the parameter.
+                  The handling of <see cref="T:System.IServiceProvider"/> parameters may be overridden via <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/>.
+                </description>
+              </item>
+              <item>
+                <description>
+                  By default, <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> parameters are bound directly to <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> instance
+                  passed into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> and are not included in the JSON schema. If the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>
+                  instance passed to <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> is <see langword="null"/>, the <see cref="T:Microsoft.Extensions.AI.AIFunction"/> implementation
+                  manufactures an empty instance, such that parameters of type <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> may always be satisfied, whether
+                  optional or not. The handling of <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> parameters may be overridden via
+                  <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/>.
+                </description>
+              </item>
+            </list>
+            All other parameter types are, by default, bound from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary passed into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/>
+            and are included in the generated JSON schema. This may be overridden by the <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/> provided
+            via the <paramref name="options"/> parameter; for every parameter, the delegate is enabled to choose if the parameter should be included in the
+            generated schema and how its value should be bound, including handling of optionality (by default, required parameters that are not included in the
+            <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary will result in an exception being thrown). Loosely-typed additional context information may be passed
+            into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> via the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Context"/> dictionary; the default
+            binding ignores this collection, but a custom binding supplied via <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/> may choose to
+            source arguments from this data.
+            </para>
+            <para>
+            The default marshaling of parameters from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary permits values to be passed into the <paramref name="method"/>'s
+            invocation directly if the object is already of a compatible type. Otherwise, if the argument is a <see cref="T:System.Text.Json.JsonElement"/>, <see cref="T:System.Text.Json.JsonDocument"/>,
+            or <see cref="T:System.Text.Json.Nodes.JsonNode"/>, it is deserialized into the parameter type, utilizing <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.SerializerOptions"/> if provided,
+            or else using <see cref="P:Microsoft.Extensions.AI.AIJsonUtilities.DefaultOptions"/>. If the argument is anything else, it is round-tripped through JSON, serializing the object as JSON
+            and then deserializing it to the expected type.
+            </para>
+            <para>
+            In general, the data supplied via an <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s dictionary is supplied from an AI service and should be considered
+            unvalidated and untrusted. To provide validated and trusted data to the invocation of <paramref name="method"/>, consider having <paramref name="method"/>
+            point to an instance method on an instance configured to hold the appropriate state. An <see cref="T:System.IServiceProvider"/> parameter may also be
+            used to resolve services from a dependency injection container.
+            </para>
+            <para>
+            By default, return values are serialized to <see cref="T:System.Text.Json.JsonElement"/> using <paramref name="options"/>'s
+            <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.SerializerOptions"/> if provided, or else using <see cref="P:Microsoft.Extensions.AI.AIJsonUtilities.DefaultOptions"/>.
+            Handling of return values may be overridden via <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.MarshalResult"/>.
+            </para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"><paramref name="method"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="method"/> represents an instance method but <paramref name="target"/> is null.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="method"/> represents an open generic method.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="method"/> contains a parameter without a parameter name.</exception>
+            <exception cref="T:System.Text.Json.JsonException">A parameter to <paramref name="method"/> or its return type is not serializable.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.Create(System.Reflection.MethodInfo,System.Object,System.String,System.String,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Creates an <see cref="T:Microsoft.Extensions.AI.AIFunction"/> instance for a method, specified via an <see cref="T:System.Reflection.MethodInfo"/> instance
+            and an optional target object if the method is an instance method.
+            </summary>
+            <param name="method">The method to be represented via the created <see cref="T:Microsoft.Extensions.AI.AIFunction"/>.</param>
+            <param name="target">
+            The target object for the <paramref name="method"/> if it represents an instance method.
+            This should be <see langword="null"/> if and only if <paramref name="method"/> is a static method.
+            </param>
+            <param name="name">
+            The name to use for the <see cref="T:Microsoft.Extensions.AI.AIFunction"/>. If <see langword="null"/>, the name will be derived from
+            the name of <paramref name="method"/>.
+            </param>
+            <param name="description">
+            The description to use for the <see cref="T:Microsoft.Extensions.AI.AIFunction"/>. If <see langword="null"/>, a description will be derived from
+            any <see cref="T:System.ComponentModel.DescriptionAttribute"/> on <paramref name="method"/>, if available.
+            </param>
+            <param name="serializerOptions">The <see cref="T:System.Text.Json.JsonSerializerOptions"/> used to marshal function parameters and return value.</param>
+            <returns>The created <see cref="T:Microsoft.Extensions.AI.AIFunction"/> for invoking <paramref name="method"/>.</returns>
+            <remarks>
+            <para>
+            Any parameters to <paramref name="method"/> are sourced from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s dictionary
+            of key/value pairs and are represented in the JSON schema for the function, as exposed in the returned <see cref="T:Microsoft.Extensions.AI.AIFunction"/>'s
+            <see cref="P:Microsoft.Extensions.AI.AIFunction.JsonSchema"/>. There are a few exceptions to this:
+            <list type="bullet">
+              <item>
+                <description>
+                  <see cref="T:System.Threading.CancellationToken"/> parameters are automatically bound to the <see cref="T:System.Threading.CancellationToken"/> passed into
+                  the invocation via <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/>'s <see cref="T:System.Threading.CancellationToken"/> parameter. The parameter is
+                  not included in the generated JSON schema.
+                </description>
+              </item>
+              <item>
+                <description>
+                  By default, <see cref="T:System.IServiceProvider"/> parameters are bound from the <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/> property
+                  and are not included in the JSON schema. If the parameter is optional, such that a default value is provided,
+                  <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/> is allowed to be <see langword="null"/>; otherwise, <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/>
+                  must be non-<see langword="null"/>, or else the invocation will fail with an exception due to the required nature of the parameter.
+                </description>
+              </item>
+              <item>
+                <description>
+                  By default, <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> parameters are bound directly to <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> instance
+                  passed into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> and are not included in the JSON schema. If the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>
+                  instance passed to <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> is <see langword="null"/>, the <see cref="T:Microsoft.Extensions.AI.AIFunction"/> implementation
+                  manufactures an empty instance, such that parameters of type <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> may always be satisfied, whether
+                  optional or not.
+                </description>
+              </item>
+            </list>
+            All other parameter types are bound from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary passed into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/>
+            and are included in the generated JSON schema.
+            </para>
+            <para>
+            The marshaling of parameters from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary permits values to be passed into the <paramref name="method"/>'s
+            invocation directly if the object is already of a compatible type. Otherwise, if the argument is a <see cref="T:System.Text.Json.JsonElement"/>, <see cref="T:System.Text.Json.JsonDocument"/>,
+            or <see cref="T:System.Text.Json.Nodes.JsonNode"/>, it is deserialized into the parameter type, utilizing <paramref name="serializerOptions"/> if provided, or else
+            <see cref="P:Microsoft.Extensions.AI.AIJsonUtilities.DefaultOptions"/>. If the argument is anything else, it is round-tripped through JSON, serializing the object as JSON
+            and then deserializing it to the expected type.
+            </para>
+            <para>
+            In general, the data supplied via an <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s dictionary is supplied from an AI service and should be considered
+            unvalidated and untrusted. To provide validated and trusted data to the invocation of <paramref name="method"/>, consider having <paramref name="method"/>
+            point to an instance method on an instance configured to hold the appropriate state. An <see cref="T:System.IServiceProvider"/> parameter may also be
+            used to resolve services from a dependency injection container.
+            </para>
+            <para>
+            Return values are serialized to <see cref="T:System.Text.Json.JsonElement"/> using <paramref name="serializerOptions"/> if provided,
+            or else using <see cref="P:Microsoft.Extensions.AI.AIJsonUtilities.DefaultOptions"/>.
+            </para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"><paramref name="method"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="method"/> represents an instance method but <paramref name="target"/> is null.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="method"/> represents an open generic method.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="method"/> contains a parameter without a parameter name.</exception>
+            <exception cref="T:System.Text.Json.JsonException">A parameter to <paramref name="method"/> or its return type is not serializable.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.Create(System.Reflection.MethodInfo,System.Func{Microsoft.Extensions.AI.AIFunctionArguments,System.Object},Microsoft.Extensions.AI.AIFunctionFactoryOptions)">
+            <summary>
+            Creates an <see cref="T:Microsoft.Extensions.AI.AIFunction"/> instance for a method, specified via a <see cref="T:System.Reflection.MethodInfo"/> for
+            an instance method and a <see cref="T:System.Func`2"/> for constructing an instance of
+            the receiver object each time the <see cref="T:Microsoft.Extensions.AI.AIFunction"/> is invoked.
+            </summary>
+            <param name="method">The instance method to be represented via the created <see cref="T:Microsoft.Extensions.AI.AIFunction"/>.</param>
+            <param name="createInstanceFunc">
+            Callback used on each function invocation to create an instance of the type on which the instance method <paramref name="method"/>
+            will be invoked. If the returned instance is <see cref="T:System.IAsyncDisposable"/> or <see cref="T:System.IDisposable"/>, it will be disposed of
+            after <paramref name="method"/> completes its invocation.
+            </param>
+            <param name="options">Metadata to use to override defaults inferred from <paramref name="method"/>.</param>
+            <returns>The created <see cref="T:Microsoft.Extensions.AI.AIFunction"/> for invoking <paramref name="method"/>.</returns>
+            <remarks>
+            <para>
+            Return values are serialized to <see cref="T:System.Text.Json.JsonElement"/> using <paramref name="options"/>'s
+            <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.SerializerOptions"/>. Arguments that are not already of the expected type are
+            marshaled to the expected type via JSON and using <paramref name="options"/>'s
+            <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.SerializerOptions"/>. If the argument is a <see cref="T:System.Text.Json.JsonElement"/>,
+            <see cref="T:System.Text.Json.JsonDocument"/>, or <see cref="T:System.Text.Json.Nodes.JsonNode"/>, it is deserialized directly. If the argument is anything else unknown,
+            it is round-tripped through JSON, serializing the object as JSON and then deserializing it to the expected type.
+            </para>
+            <para>
+            By default, any parameters to <paramref name="method"/> are sourced from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s dictionary
+            of key/value pairs and are represented in the JSON schema for the function, as exposed in the returned <see cref="T:Microsoft.Extensions.AI.AIFunction"/>'s
+            <see cref="P:Microsoft.Extensions.AI.AIFunction.JsonSchema"/>. There are a few exceptions to this:
+            <list type="bullet">
+              <item>
+                <description>
+                  <see cref="T:System.Threading.CancellationToken"/> parameters are automatically bound to the <see cref="T:System.Threading.CancellationToken"/> passed into
+                  the invocation via <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/>'s <see cref="T:System.Threading.CancellationToken"/> parameter. The parameter is
+                  not included in the generated JSON schema. The behavior of <see cref="T:System.Threading.CancellationToken"/> parameters may not be overridden.
+                </description>
+              </item>
+              <item>
+                <description>
+                  By default, <see cref="T:System.IServiceProvider"/> parameters are bound from the <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/> property
+                  and are not included in the JSON schema. If the parameter is optional, such that a default value is provided,
+                  <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/> is allowed to be <see langword="null"/>; otherwise, <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Services"/>
+                  must be non-<see langword="null"/>, or else the invocation will fail with an exception due to the required nature of the parameter.
+                  The handling of <see cref="T:System.IServiceProvider"/> parameters may be overridden via <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/>.
+                </description>
+              </item>
+              <item>
+                <description>
+                  By default, <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> parameters are bound directly to <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> instance
+                  passed into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> and are not included in the JSON schema. If the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>
+                  instance passed to <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> is <see langword="null"/>, the <see cref="T:Microsoft.Extensions.AI.AIFunction"/> implementation
+                  manufactures an empty instance, such that parameters of type <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> may always be satisfied, whether
+                  optional or not. The handling of <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> parameters may be overridden via
+                  <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/>.
+                </description>
+              </item>
+            </list>
+            All other parameter types are, by default, bound from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary passed into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/>
+            and are included in the generated JSON schema. This may be overridden by the <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/> provided
+            via the <paramref name="options"/> parameter; for every parameter, the delegate is enabled to choose if the parameter should be included in the
+            generated schema and how its value should be bound, including handling of optionality (by default, required parameters that are not included in the
+            <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary will result in an exception being thrown). Loosely-typed additional context information may be passed
+            into <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> via the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s <see cref="P:Microsoft.Extensions.AI.AIFunctionArguments.Context"/> dictionary; the default
+            binding ignores this collection, but a custom binding supplied via <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/> may choose to
+            source arguments from this data.
+            </para>
+            <para>
+            The default marshaling of parameters from the <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/> dictionary permits values to be passed into the <paramref name="method"/>'s
+            invocation directly if the object is already of a compatible type. Otherwise, if the argument is a <see cref="T:System.Text.Json.JsonElement"/>, <see cref="T:System.Text.Json.JsonDocument"/>,
+            or <see cref="T:System.Text.Json.Nodes.JsonNode"/>, it is deserialized into the parameter type, utilizing <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.SerializerOptions"/> if provided,
+            or else using <see cref="P:Microsoft.Extensions.AI.AIJsonUtilities.DefaultOptions"/>. If the argument is anything else, it is round-tripped through JSON, serializing the object as JSON
+            and then deserializing it to the expected type.
+            </para>
+            <para>
+            In general, the data supplied via an <see cref="T:Microsoft.Extensions.AI.AIFunctionArguments"/>'s dictionary is supplied from an AI service and should be considered
+            unvalidated and untrusted. To provide validated and trusted data to the invocation of <paramref name="method"/>, the instance constructed
+            for each invocation may contain that data in it, such that it's then available to <paramref name="method"/> as instance data.
+            An <see cref="T:System.IServiceProvider"/> parameter may also be used to resolve services from a dependency injection container.
+            </para>
+            <para>
+            By default, return values are serialized to <see cref="T:System.Text.Json.JsonElement"/> using <paramref name="options"/>'s
+            <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.SerializerOptions"/> if provided, or else using <see cref="P:Microsoft.Extensions.AI.AIJsonUtilities.DefaultOptions"/>.
+            Handling of return values may be overridden via <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.MarshalResult"/>.
+            </para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"><paramref name="method"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="createInstanceFunc"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="method"/> represents a static method.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="method"/> represents an open generic method.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="method"/> contains a parameter without a parameter name.</exception>
+            <exception cref="T:System.Text.Json.JsonException">A parameter to <paramref name="method"/> or its return type is not serializable.</exception>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.AIFunctionFactory.ReflectionAIFunctionDescriptor">
+            <summary>
+            A descriptor for a .NET method-backed AIFunction that precomputes its marshalling delegates and JSON schema.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Extensions.AI.AIFunctionFactory.ReflectionAIFunctionDescriptor._boxedDefaultCancellationToken">
+            <summary>A boxed <see cref="P:System.Threading.CancellationToken.None"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.ReflectionAIFunctionDescriptor.GetOrCreate(System.Reflection.MethodInfo,Microsoft.Extensions.AI.AIFunctionFactoryOptions)">
+            <summary>
+            Gets or creates a descriptors using the specified method and options.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.ReflectionAIFunctionDescriptor.GetParameterMarshaller(System.Text.Json.JsonSerializerOptions,Microsoft.Extensions.AI.AIFunctionFactoryOptions.ParameterBindingOptions,System.Reflection.ParameterInfo)">
+            <summary>
+            Gets a delegate for handling the marshaling of a parameter.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.ReflectionAIFunctionDescriptor.GetReturnParameterMarshaller(Microsoft.Extensions.AI.AIFunctionFactory.ReflectionAIFunctionDescriptor.DescriptorKey,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Gets a delegate for handling the result value of a method, converting it into the <see cref="T:System.Threading.Tasks.Task`1"/> to return from the invocation.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.SanitizeMemberName(System.String)">
+            <summary>
+            Removes characters from a .NET member name that shouldn't be used in an AI function name.
+            </summary>
+            <param name="memberName">The .NET member name that should be sanitized.</param>
+            <returns>
+            Replaces non-alphanumeric characters in the identifier with the underscore character.
+            Primarily intended to remove characters produced by compiler-generated method name mangling.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.InvalidNameCharsRegex">
+            <summary>Regex that flags any character other than ASCII digits or letters or the underscore.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.ReflectionInvoke(System.Reflection.MethodInfo,System.Object,System.Object[])">
+            <summary>Invokes the MethodInfo with the specified target object and arguments.</summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.AIFunctionFactory.PooledMemoryStream">
+            <summary>
+            Implements a simple write-only memory stream that uses pooled buffers.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.AIFunctionFactoryOptions">
+            <summary>
+            Represents options that can be provided when creating an <see cref="T:Microsoft.Extensions.AI.AIFunction"/> from a method.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactoryOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Extensions.AI.AIFunctionFactoryOptions"/> class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.SerializerOptions">
+            <summary>Gets or sets the <see cref="T:System.Text.Json.JsonSerializerOptions"/> used to marshal .NET values being passed to the underlying delegate.</summary>
+            <remarks>
+            If no value has been specified, the <see cref="P:Microsoft.Extensions.AI.AIJsonUtilities.DefaultOptions"/> instance will be used.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.JsonSchemaCreateOptions">
+            <summary>
+            Gets or sets the <see cref="T:Microsoft.Extensions.AI.AIJsonSchemaCreateOptions"/> governing the generation of JSON schemas for the function.
+            </summary>
+            <remarks>
+            If no value has been specified, the <see cref="P:Microsoft.Extensions.AI.AIJsonSchemaCreateOptions.Default"/> instance will be used.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.Name">
+            <summary>Gets or sets the name to use for the function.</summary>
+            <value>
+            The name to use for the function. The default value is a name derived from the method represented by the passed <see cref="T:System.Delegate"/> or <see cref="T:System.Reflection.MethodInfo"/>.
+            </value>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.Description">
+            <summary>Gets or sets the description to use for the function.</summary>
+            <value>
+            The description for the function. The default value is a description derived from the passed <see cref="T:System.Delegate"/> or <see cref="T:System.Reflection.MethodInfo"/>, if possible
+            (for example, via a <see cref="T:System.ComponentModel.DescriptionAttribute"/> on the method).
+            </value>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.AdditionalProperties">
+            <summary>
+            Gets or sets additional values to store on the resulting <see cref="P:Microsoft.Extensions.AI.AITool.AdditionalProperties" /> property.
+            </summary>
+            <remarks>
+            This property can be used to provide arbitrary information about the function.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding">
+            <summary>Gets or sets a delegate used to determine how a particular parameter to the function should be bound.</summary>
+            <remarks>
+            <para>
+            If <see langword="null"/>, the default parameter binding logic will be used. If non-<see langword="null"/> value,
+            this delegate will be invoked once for each parameter in the function as part of creating the <see cref="T:Microsoft.Extensions.AI.AIFunction"/> instance.
+            It is not invoked for parameters of type <see cref="T:System.Threading.CancellationToken"/>, which are invariably bound to the token
+            provided to the <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> invocation.
+            </para>
+            <para>
+            Returning a default <see cref="T:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ParameterBindingOptions"/> results in the same behavior as if
+            <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/> is <see langword="null"/>.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.MarshalResult">
+            <summary>Gets or sets a delegate used to determine the <see cref="T:System.Object"/> returned by <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/>.</summary>
+            <remarks>
+            <para>
+            By default, the return value of invoking the method wrapped into an <see cref="T:Microsoft.Extensions.AI.AIFunction"/> by <see cref="T:Microsoft.Extensions.AI.AIFunctionFactory"/>
+            is then JSON serialized, with the resulting <see cref="T:System.Text.Json.JsonElement"/> returned from the <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> method.
+            This default behavior is ideal for the common case where the result will be passed back to an AI service. However, if the caller
+            requires more control over the result's marshaling, the <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.MarshalResult"/> property may be set to a delegate that is
+            then provided with complete control over the result's marshaling. The delegate is invoked with the value returned by the method,
+            and its return value is then returned from the <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/> method.
+            </para>
+            <para>
+            When set, the delegate is invoked even for <see langword="void"/>-returning methods, in which case it is invoked with
+            a <see langword="null"/> argument. By default, <see langword="null"/> is returned from the <see cref="M:Microsoft.Extensions.AI.AIFunction.InvokeAsync(Microsoft.Extensions.AI.AIFunctionArguments,System.Threading.CancellationToken)"/>
+            method for <see cref="T:Microsoft.Extensions.AI.AIFunction"/> instances produced by <see cref="T:Microsoft.Extensions.AI.AIFunctionFactory"/> to wrap
+            <see langword="void"/>-returning methods).
+            </para>
+            <para>
+            Methods strongly-typed to return types of <see cref="T:System.Threading.Tasks.Task"/>, <see cref="T:System.Threading.Tasks.Task`1"/>, <see cref="T:System.Threading.Tasks.ValueTask"/>,
+            and <see cref="T:System.Threading.Tasks.ValueTask`1"/> are special-cased. For methods typed to return <see cref="T:System.Threading.Tasks.Task"/> or <see cref="T:System.Threading.Tasks.ValueTask"/>,
+            <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.MarshalResult"/> will be invoked with the <see langword="null"/> value after the returned task has successfully completed.
+            For methods typed to return <see cref="T:System.Threading.Tasks.Task`1"/> or <see cref="T:System.Threading.Tasks.ValueTask`1"/>, the delegate will be invoked with the
+            task's result value after the task has successfully completed.These behaviors keep synchronous and asynchronous methods consistent.
+            </para>
+            <para>
+            In addition to the returned value, which is provided to the delegate as the first argument, the delegate is also provided with
+            a <see cref="T:System.Type"/> represented the declared return type of the method. This can be used to determine how to marshal the result.
+            This may be different than the actual type of the object (<see cref="M:System.Object.GetType"/>) if the method returns a derived type
+            or <see langword="null"/>. If the method is typed to return <see cref="T:System.Threading.Tasks.Task"/>, <see cref="T:System.Threading.Tasks.ValueTask"/>, or <see langword="void"/>,
+            the <see cref="T:System.Type"/> argument will be <see langword="null"/>.
+            </para>
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ParameterBindingOptions">
+            <summary>Provides configuration options produced by the <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ConfigureParameterBinding"/> delegate.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ParameterBindingOptions.BindParameter">
+            <summary>Gets a delegate used to determine the value for a bound parameter.</summary>
+            <remarks>
+            <para>
+            The default value is <see langword="null"/>.
+            </para>
+            <para>
+            If <see langword="null"/>, the default binding semantics are used for the parameter.
+            If non- <see langword="null"/>, each time the <see cref="T:Microsoft.Extensions.AI.AIFunction"/> is invoked, this delegate will be invoked
+            to select the argument value to use for the parameter. The return value of the delegate will be used for the parameter's
+            value.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ParameterBindingOptions.ExcludeFromSchema">
+            <summary>Gets a value indicating whether the parameter should be excluded from the generated schema.</summary>
+            <remarks>
+            <para>
+            The default value is <see langword="false"/>.
+            </para>
+            <para>
+            Typically, this property is set to <see langword="true"/> if and only if <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ParameterBindingOptions.BindParameter"/> is also set to
+            non-<see langword="null"/>. While it's possible to exclude the schema when <see cref="P:Microsoft.Extensions.AI.AIFunctionFactoryOptions.ParameterBindingOptions.BindParameter"/> is <see langword="null"/>,
+            doing so means that default marshaling will be used but the AI service won't be aware of the parameter or able to generate
+            an argument for it. This is likely to result in invocation errors, as the parameter information is unlikely to be available.
+            It, however, is permissible for cases where invocation of the <see cref="T:Microsoft.Extensions.AI.AIFunction"/> is tightly controlled, and the caller
+            is expected to augment the argument dictionary with the parameter value.
+            </para>
+            </remarks>
         </member>
         <member name="T:Microsoft.Extensions.AI.HostedCodeInterpreterTool">
             <summary>Represents a hosted tool that can be specified to an AI service to enable it to execute code it generates.</summary>
@@ -3692,6 +4326,24 @@
         </member>
         <member name="P:Microsoft.Extensions.AI.SpeechToTextOptions.AdditionalProperties">
             <summary>Gets or sets any additional properties associated with the options.</summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.SpeechToTextOptions.RawRepresentationFactory">
+            <summary>
+            Gets or sets a callback responsible for creating the raw representation of the embedding generation options from an underlying implementation.
+            </summary>
+            <remarks>
+            The underlying <see cref="T:Microsoft.Extensions.AI.ISpeechToTextClient" /> implementation may have its own representation of options.
+            When <see cref="M:Microsoft.Extensions.AI.ISpeechToTextClient.GetTextAsync(System.IO.Stream,Microsoft.Extensions.AI.SpeechToTextOptions,System.Threading.CancellationToken)" /> or <see cref="M:Microsoft.Extensions.AI.ISpeechToTextClient.GetStreamingTextAsync(System.IO.Stream,Microsoft.Extensions.AI.SpeechToTextOptions,System.Threading.CancellationToken)"/>
+            is invoked with an <see cref="T:Microsoft.Extensions.AI.SpeechToTextOptions" />, that implementation may convert the provided options into
+            its own representation in order to use it while performing the operation. For situations where a consumer knows
+            which concrete <see cref="T:Microsoft.Extensions.AI.ISpeechToTextClient" /> is being used and how it represents options, a new instance of that
+            implementation-specific options type may be returned by this callback, for the <see cref="T:Microsoft.Extensions.AI.ISpeechToTextClient" />
+            implementation to use instead of creating a new instance. Such implementations may mutate the supplied options
+            instance further based on other settings supplied on this <see cref="T:Microsoft.Extensions.AI.SpeechToTextOptions" /> instance or from other inputs,
+            therefore, it is <b>strongly recommended</b> to not return shared instances and instead make the callback return a new instance on each call.
+            This is typically used to set an implementation-specific setting that isn't otherwise exposed from the strongly-typed
+            properties on <see cref="T:Microsoft.Extensions.AI.SpeechToTextOptions" />.
+            </remarks>
         </member>
         <member name="M:Microsoft.Extensions.AI.SpeechToTextOptions.Clone">
             <summary>Produces a clone of the current <see cref="T:Microsoft.Extensions.AI.SpeechToTextOptions"/> instance.</summary>
@@ -4035,24 +4687,123 @@
             The delegate is not invoked for <see cref="T:System.Threading.CancellationToken"/> parameters.
             </remarks>
         </member>
-        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaCreateOptions.IncludeTypeInEnumSchemas">
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaCreateOptions.TransformOptions">
             <summary>
-            Gets a value indicating whether to include the type keyword in inferred schemas for .NET enums.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaCreateOptions.DisallowAdditionalProperties">
-            <summary>
-            Gets a value indicating whether to generate schemas with the additionalProperties set to false for .NET objects.
+            Gets a <see cref="T:Microsoft.Extensions.AI.AIJsonSchemaTransformOptions"/> governing transformations on the JSON schema after it has been generated.
             </summary>
         </member>
         <member name="P:Microsoft.Extensions.AI.AIJsonSchemaCreateOptions.IncludeSchemaKeyword">
             <summary>
-            Gets a value indicating whether to include the $schema keyword in inferred schemas.
+            Gets a value indicating whether to include the $schema keyword in created schemas.
             </summary>
         </member>
-        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaCreateOptions.RequireAllProperties">
+        <member name="T:Microsoft.Extensions.AI.AIJsonSchemaTransformCache">
+            <summary>
+            Defines a cache for JSON schemas transformed according to the specified <see cref="T:Microsoft.Extensions.AI.AIJsonSchemaTransformOptions"/> policy.
+            </summary>
+            <remarks>
+            <para>
+            This cache stores weak references from AI abstractions that declare JSON schemas such as <see cref="T:Microsoft.Extensions.AI.AIFunction"/> or <see cref="T:Microsoft.Extensions.AI.ChatResponseFormatJson"/>
+            to their corresponding JSON schemas transformed according to the specified <see cref="P:Microsoft.Extensions.AI.AIJsonSchemaTransformCache.TransformOptions"/> policy. It is intended for use by <see cref="T:Microsoft.Extensions.AI.IChatClient"/>
+            implementations that enforce vendor-specific restrictions on what constitutes a valid JSON schema for a given function or response format.
+            </para>
+            <para>
+            It is recommended <see cref="T:Microsoft.Extensions.AI.IChatClient"/> implementations with schema transformation requirements should create a single static instance of this cache.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIJsonSchemaTransformCache.#ctor(Microsoft.Extensions.AI.AIJsonSchemaTransformOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Extensions.AI.AIJsonSchemaTransformCache"/> class with the specified options.
+            </summary>
+            <param name="transformOptions">The options governing schema transformation.</param>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaTransformCache.TransformOptions">
+            <summary>
+            Gets the options governing schema transformation.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIJsonSchemaTransformCache.GetOrCreateTransformedSchema(Microsoft.Extensions.AI.AIFunction)">
+            <summary>
+            Gets or creates a transformed JSON schema for the specified <see cref="T:Microsoft.Extensions.AI.AIFunction"/> instance.
+            </summary>
+            <param name="function">The function whose JSON schema we want to transform.</param>
+            <returns>The transformed JSON schema corresponding to <see cref="P:Microsoft.Extensions.AI.AIJsonSchemaTransformCache.TransformOptions"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIJsonSchemaTransformCache.GetOrCreateTransformedSchema(Microsoft.Extensions.AI.ChatResponseFormatJson)">
+            <summary>
+            Gets or creates a transformed JSON schema for the specified <see cref="T:Microsoft.Extensions.AI.ChatResponseFormatJson"/> instance.
+            </summary>
+            <param name="responseFormat">The response format whose JSON schema we want to transform.</param>
+            <returns>The transformed JSON schema corresponding to <see cref="P:Microsoft.Extensions.AI.AIJsonSchemaTransformCache.TransformOptions"/>.</returns>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.AIJsonSchemaTransformContext">
+            <summary>
+            Defines the context for transforming a schema node withing a larger schema document.
+            </summary>
+            <remarks>
+            This struct is being passed to the user-provided <see cref="P:Microsoft.Extensions.AI.AIJsonSchemaTransformOptions.TransformSchemaNode"/> 
+            callback by the <see cref="M:Microsoft.Extensions.AI.AIJsonUtilities.CreateJsonSchema(System.Type,System.String,System.Boolean,System.Object,System.Text.Json.JsonSerializerOptions,Microsoft.Extensions.AI.AIJsonSchemaCreateOptions)"/> method and cannot be instantiated directly.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaTransformContext.Path">
+            <summary>
+            Gets the path to the schema document currently being generated.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaTransformContext.PropertyName">
+            <summary>
+            Gets the containing property name if the current schema is a property of an object.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaTransformContext.IsCollectionElementSchema">
+            <summary>
+            Gets a value indicating whether the current schema is a collection element.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaTransformContext.IsDictionaryValueSchema">
+            <summary>
+            Gets a value indicating whether the current schema is a dictionary value.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Extensions.AI.AIJsonSchemaTransformOptions">
+            <summary>
+            Provides options for configuring the behavior of <see cref="T:Microsoft.Extensions.AI.AIJsonUtilities"/> JSON schema transformation functionality.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaTransformOptions.TransformSchemaNode">
+            <summary>
+            Gets a callback that is invoked for every schema that is generated within the type graph.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaTransformOptions.ConvertBooleanSchemas">
+            <summary>
+            Gets a value indicating whether to convert boolean schemas to equivalent object-based representations.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaTransformOptions.DisallowAdditionalProperties">
+            <summary>
+            Gets a value indicating whether to generate schemas with the additionalProperties set to false for .NET objects.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaTransformOptions.RequireAllProperties">
             <summary>
             Gets a value indicating whether to mark all properties as required in the schema.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaTransformOptions.UseNullableKeyword">
+            <summary>
+            Gets a value indicating whether to substitute nullable "type" keywords with OpenAPI 3.0 style "nullable" keywords in the schema.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaTransformOptions.MoveDefaultKeywordToDescription">
+            <summary>
+            Gets a value indicating whether to move the default keyword to the description field in the schema.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonSchemaTransformOptions.Default">
+            <summary>
+            Gets the default options instance.
             </summary>
         </member>
         <member name="T:Microsoft.Extensions.AI.AIJsonUtilities">
@@ -4175,6 +4926,11 @@
             </summary>
         </member>
         <member name="P:Microsoft.Extensions.AI.AIJsonUtilities.JsonContext.AutoChatToolMode">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonUtilities.JsonContext.BinaryEmbedding">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -4365,6 +5121,11 @@
             </summary>
         </member>
         <member name="P:Microsoft.Extensions.AI.AIJsonUtilities.JsonContext.UsageDetails">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonUtilities.JsonContext.BitArray">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -4578,8 +5339,32 @@
         <member name="M:Microsoft.Extensions.AI.AIJsonUtilities.JsonContext.GetTypeInfo(System.Type)">
             <inheritdoc/>
         </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonUtilities.JsonContextNoIndentation.JsonNode">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonUtilities.JsonContextNoIndentation.Default">
+            <summary>
+            The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.AI.AIJsonUtilities.JsonContextNoIndentation.GeneratedSerializerOptions">
+            <summary>
+            The source-generated options associated with this context.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIJsonUtilities.JsonContextNoIndentation.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIJsonUtilities.JsonContextNoIndentation.#ctor(System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIJsonUtilities.JsonContextNoIndentation.GetTypeInfo(System.Type)">
+            <inheritdoc/>
+        </member>
         <member name="F:Microsoft.Extensions.AI.AIJsonUtilities.SchemaKeywordUri">
-            <summary>The uri used when populating the $schema keyword in inferred schemas.</summary>
+            <summary>The uri used when populating the $schema keyword in created schemas.</summary>
         </member>
         <member name="M:Microsoft.Extensions.AI.AIJsonUtilities.CreateFunctionJsonSchema(System.Reflection.MethodBase,System.String,System.String,System.Text.Json.JsonSerializerOptions,Microsoft.Extensions.AI.AIJsonSchemaCreateOptions)">
             <summary>
@@ -4589,7 +5374,7 @@
             <param name="title">The title keyword used by the method schema.</param>
             <param name="description">The description keyword used by the method schema.</param>
             <param name="serializerOptions">The options used to extract the schema from the specified type.</param>
-            <param name="inferenceOptions">The options controlling schema inference.</param>
+            <param name="inferenceOptions">The options controlling schema creation.</param>
             <returns>A JSON schema document encoded as a <see cref="T:System.Text.Json.JsonElement"/>.</returns>
             <exception cref="T:System.ArgumentNullException"><paramref name="method"/> is <see langword="null"/>.</exception>
         </member>
@@ -4600,7 +5385,7 @@
             <param name="hasDefaultValue"><see langword="true"/> if the parameter is optional; otherwise, <see langword="false"/>.</param>
             <param name="defaultValue">The default value of the optional parameter, if applicable.</param>
             <param name="serializerOptions">The options used to extract the schema from the specified type.</param>
-            <param name="inferenceOptions">The options controlling schema inference.</param>
+            <param name="inferenceOptions">The options controlling schema creation.</param>
             <returns>A <see cref="T:System.Text.Json.JsonElement"/> representing the schema.</returns>
         </member>
         <member name="P:Microsoft.Extensions.AI.AIJsonUtilities.DefaultJsonSchema">
@@ -4608,6 +5393,15 @@
         </member>
         <member name="M:Microsoft.Extensions.AI.AIJsonUtilities.ValidateSchemaDocument(System.Text.Json.JsonElement,System.String)">
             <summary>Validates the provided JSON schema document.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.AI.AIJsonUtilities.TransformSchema(System.Text.Json.JsonElement,Microsoft.Extensions.AI.AIJsonSchemaTransformOptions)">
+            <summary>
+            Transforms the given JSON schema based on the provided options.
+            </summary>
+            <param name="schema">The schema document to transform.</param>
+            <param name="transformOptions">The options governing schema transformation.</param>
+            <returns>A new schema document with transformations applied.</returns>
+            <remarks>The schema and any nested schemas are transformed using depth-first traversal.</remarks>
         </member>
     </members>
 </doc>
