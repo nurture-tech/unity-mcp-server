@@ -58,11 +58,9 @@ namespace Nurture.MCP.Editor
             var toolOptions = new McpServerToolCreateOptions()
             {
                 Services = services,
-                /*
+                
                 SchemaCreateOptions = new()
                 {
-                    RequireAllProperties = false,
-                    DisallowAdditionalProperties = false,
                     TransformSchemaNode = (context, node) =>
                     {
                         // If the node contains a property called "type" which is an array, convert it to a string value containing the first element of the array.
@@ -78,7 +76,7 @@ namespace Nurture.MCP.Editor
                         return node;
                     },
                 },
-                */
+                
             };
 
             CollectTools(options, toolOptions);
