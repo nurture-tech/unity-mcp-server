@@ -131,15 +131,13 @@ namespace Nurture.MCP.Editor.Services
             [Description(
                 @"The C# class to compile and execute which follows the format:      
 
-                    using ModelContextProtocol;
-                    using System;
-                    using System.Threading;
-                    using System.Threading.Tasks;
+                    using UnityEngine;
+                    using UnityEditor;
                     {{ using }}
 
                     public class CodeExecutor
                     {
-                        public static async Task<string> Execute(CancellationToken cancellationToken, IProgress<ProgressNotificationValue> progress)
+                        public static string Execute()
                         {
                             {{ body }}
                             return {{ result }};
@@ -189,11 +187,8 @@ namespace Nurture.MCP.Editor.Services
 
                             var result = await UnityLoggerExtensions.WithLogs(
                                 () =>
-                                    (
-                                        method.Invoke(
-                                            null,
-                                            new object[] { cancellationToken, progress }
-                                        ) as Task<string>
+                                    Task.FromResult(
+                                        method.Invoke(null, new object[] { }) as string
                                     ),
                                 // Don't log stack traces since they'll be useless (no backing file)
                                 false
