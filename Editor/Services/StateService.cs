@@ -12,6 +12,7 @@ using Nurture.MCP.Editor.Services;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 
 namespace Nurture.Mcp.Editor.Services
 {
@@ -23,6 +24,7 @@ namespace Nurture.Mcp.Editor.Services
             public List<SceneService.SceneIndexEntry> OpenScenes { get; set; }
             public string UnityVersion { get; set; }
             public bool IsPlaying { get; set; }
+            public bool InPrefabIsolationMode { get; set; }
         }
 
         [McpServerTool(
@@ -77,6 +79,7 @@ namespace Nurture.Mcp.Editor.Services
                         OpenScenes = openScenes,
                         UnityVersion = Application.unityVersion,
                         IsPlaying = EditorApplication.isPlaying,
+                        InPrefabIsolationMode = StageUtility.GetCurrentStage() is PrefabStage,
                     };
                 },
                 cancellationToken
