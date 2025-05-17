@@ -175,7 +175,7 @@ namespace Nurture.MCP.Editor.Services
             Name = "get_asset_contents"
         )]
         [Description(
-            @"Get the full contents of an asset or sub-asset. Call UnpackAsset in order to get the fileID.
+            @"Get the full contents of an asset or sub-asset.
             If you don't know what the guid or fileID is, use the `search` tool to find it."
         )]
         internal static Task<List<Content>> GetAssetContents(
