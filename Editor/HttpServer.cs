@@ -238,7 +238,7 @@ namespace Nurture.MCP.Editor
 
         public async Task HandleGetRequestAsync(HttpListenerContext context)
         {
-            var sessionId = context.Request.Headers["mcp-session-id"].ToString();
+            string sessionId = context.Request.Headers["mcp-session-id"];
             var session = await GetSessionAsync(context, sessionId);
             if (session is null)
             {
@@ -256,7 +256,7 @@ namespace Nurture.MCP.Editor
 
         public async Task HandleDeleteRequestAsync(HttpListenerContext context)
         {
-            var sessionId = context.Request.Headers["mcp-session-id"].ToString();
+            var sessionId = context.Request.Headers["mcp-session-id"];
             if (_sessions.TryRemove(sessionId, out var session))
             {
                 await session.DisposeAsync();
@@ -267,7 +267,7 @@ namespace Nurture.MCP.Editor
         {
             HttpMcpSession<StreamableHttpServerTransport>? session;
 
-            if (!_sessions.TryGetValue(sessionId, out session))
+            if (sessionId == null || !_sessions.TryGetValue(sessionId, out session))
             {
                 // -32001 isn't part of the MCP standard, but this is what the typescript-sdk currently does.
                 // One of the few other usages I found was from some Ethereum JSON-RPC documentation and this
@@ -283,7 +283,7 @@ namespace Nurture.MCP.Editor
 
         private async ValueTask<HttpMcpSession<StreamableHttpServerTransport>?> GetOrCreateSessionAsync(HttpListenerContext context)
         {
-            var sessionId = context.Request.Headers["mcp-session-id"].ToString();
+            string sessionId = context.Request.Headers["mcp-session-id"];
 
             if (string.IsNullOrEmpty(sessionId))
             {
