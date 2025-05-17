@@ -182,7 +182,8 @@ namespace Nurture.MCP.Editor.Services
             SynchronizationContext context,
             string guid,
             string fileID,
-            CancellationToken cancellationToken
+            CancellationToken cancellationToken, 
+            IProgress<ProgressNotificationValue> progress
         )
         {
             // TODO: Make a bulk version of this that can get multiple assets at once
@@ -212,7 +213,7 @@ namespace Nurture.MCP.Editor.Services
                     {
                         Texture2D texture => FormatTexture(texture),
                         Mesh mesh => FormatMesh(mesh),
-                        GameObject gameObject => FormatGameObject(gameObject),
+                        GameObject gameObject => FormatGameObject(gameObject, progress, cancellationToken),
                         AudioClip audioClip => FormatAudioClip(audioClip),
                         // TODO: Add support for other asset types
                         _ => FormatAsset(asset),
@@ -258,14 +259,26 @@ namespace Nurture.MCP.Editor.Services
             );
         }
 
-        private static async Task<List<Content>> FormatGameObject(GameObject asset)
+        private static async Task<List<Content>> FormatGameObject(GameObject asset, IProgress<ProgressNotificationValue> progress, CancellationToken cancellationToken)
         {
-            var importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(asset));
+            var assetPath = AssetDatabase.GetAssetPath(asset);
+            var importer = AssetImporter.GetAtPath(assetPath);
             var result = await FormatAsset(asset);
 
             if (importer is ModelImporter)
             {
                 var preview = AssetPreview.GetAssetPreview(asset);
+
+                while (AssetPreview.IsLoadingAssetPreviews())
+                {
+                    progress.Report(new ProgressNotificationValue() { Progress = 0.5f, Message = "Loading asset preview..." });
+                    await Task.Delay(100);
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return new List<Content>();
+                    }
+                }
+
 
                 if (preview != null)
                 {
