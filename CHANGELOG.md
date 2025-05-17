@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Return acknowledgement for `copy_asset` so that Cursor doesn't think the tool call failed when it actually succeeded.
 
+- If no logs are returned from `Task<string> WithLogs(AsyncAction action, bool includeStackTrace = true)` it no longer raises an exception.
+
 
 ## [0.2.0] - 2025-05-16
 

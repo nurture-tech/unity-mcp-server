@@ -46,11 +46,19 @@ namespace Nurture.MCP.Editor
             await action();
             // NOTE: This could include log messages from interleaved async operations
             Application.logMessageReceived -= handler;
-            return buffer
-                .Select(l =>
-                    $"[{Enum.GetName(typeof(LogType), l.logType)}] {l.message} {l.stackTrace}"
-                )
-                .Aggregate((a, b) => $"{a}\n{b}");
+
+            if (buffer.Count > 0)
+            {
+                return buffer
+                    .Select(l =>
+                        $"[{Enum.GetName(typeof(LogType), l.logType)}] {l.message} {l.stackTrace}"
+                    )
+                    .Aggregate((a, b) => $"{a}\n{b}");
+            }
+            else
+            {
+                return "";
+            }   
         }
 
         public static async Task<WithLogResult<T>> WithLogs<T>(
