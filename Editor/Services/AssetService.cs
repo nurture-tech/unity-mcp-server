@@ -272,7 +272,10 @@ namespace Nurture.MCP.Editor.Services
             GameObject asset,
             IProgress<ProgressNotificationValue> progress,
             CancellationToken cancellationToken,
-            bool supportsImages
+            [Description(
+                "If true, the LLM model being used can interpret image data and the MCP client supports handling image content."
+            )]
+                bool supportsImages
         )
         {
             var assetPath = AssetDatabase.GetAssetPath(asset);
