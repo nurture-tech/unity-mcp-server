@@ -84,7 +84,10 @@ namespace Nurture.MCP.Editor.Services
             Title = "Unity Take Scene View Screenshot",
             Name = "screenshot"
         )]
-        [Description("Retrieve a preview of what is focused in the scene view.")]
+        [Description(
+            @"Retrieve a preview of what is focused in the scene view. 
+            Only use this tool if the LLM model being used can interpret image data and the MCP client supports handling image content."
+        )]
         internal static async Task<Content> TakeScreenshot(
             SynchronizationContext context,
             CancellationToken cancellationToken,

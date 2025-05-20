@@ -180,10 +180,14 @@ namespace Nurture.MCP.Editor.Services
         )]
         internal static Task<List<Content>> GetAssetContents(
             SynchronizationContext context,
+            CancellationToken cancellationToken,
+            IProgress<ProgressNotificationValue> progress,
             string guid,
             string fileID,
-            CancellationToken cancellationToken, 
-            IProgress<ProgressNotificationValue> progress
+            [Description(
+                "If true, the LLM model being used can interpret image data and the MCP client supports handling image content."
+            )]
+                bool supportsImages = false
         )
         {
             // TODO: Make a bulk version of this that can get multiple assets at once
@@ -213,7 +217,12 @@ namespace Nurture.MCP.Editor.Services
                     {
                         Texture2D texture => FormatTexture(texture),
                         Mesh mesh => FormatMesh(mesh),
-                        GameObject gameObject => FormatGameObject(gameObject, progress, cancellationToken),
+                        GameObject gameObject => FormatGameObject(
+                            gameObject,
+                            progress,
+                            cancellationToken,
+                            supportsImages
+                        ),
                         AudioClip audioClip => FormatAudioClip(audioClip),
                         // TODO: Add support for other asset types
                         _ => FormatAsset(asset),
@@ -259,26 +268,36 @@ namespace Nurture.MCP.Editor.Services
             );
         }
 
-        private static async Task<List<Content>> FormatGameObject(GameObject asset, IProgress<ProgressNotificationValue> progress, CancellationToken cancellationToken)
+        private static async Task<List<Content>> FormatGameObject(
+            GameObject asset,
+            IProgress<ProgressNotificationValue> progress,
+            CancellationToken cancellationToken,
+            bool supportsImages
+        )
         {
             var assetPath = AssetDatabase.GetAssetPath(asset);
             var importer = AssetImporter.GetAtPath(assetPath);
             var result = await FormatAsset(asset);
 
-            if (importer is ModelImporter)
+            if (importer is ModelImporter && supportsImages)
             {
                 var preview = AssetPreview.GetAssetPreview(asset);
 
                 while (AssetPreview.IsLoadingAssetPreviews())
                 {
-                    progress.Report(new ProgressNotificationValue() { Progress = 0.5f, Message = "Loading asset preview..." });
+                    progress.Report(
+                        new ProgressNotificationValue()
+                        {
+                            Progress = 0.5f,
+                            Message = "Loading asset preview...",
+                        }
+                    );
                     await Task.Delay(100);
                     if (cancellationToken.IsCancellationRequested)
                     {
                         return new List<Content>();
                     }
                 }
-
 
                 if (preview != null)
                 {
