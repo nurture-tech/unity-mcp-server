@@ -200,7 +200,10 @@ namespace Nurture.MCP.Editor.Services
                         }
                         catch (Exception e)
                         {
-                            throw new McpException($"Script execution failed: {e.Message}", e);
+                            throw new McpException(
+                                $"Script execution failed: {e.InnerException?.Message}\n{e.InnerException?.StackTrace}",
+                                e
+                            );
                         }
                     }
                     finally
