@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Returning an image preview of a model in `get_asset_contents` is now optional and specifieid by a parameter.
 
+- Define `UNITY_EDITOR` to increase likelyhood of certain generated editor scripts compiling.
+
 ### Fixed
 
 - Wait for preview to load before returning model asset so that the preview is returned reliably.
