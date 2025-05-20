@@ -133,7 +133,7 @@ namespace Nurture.MCP.Editor.Services
                     string query = name ?? "";
                     if (filters?.Length > 0)
                     {
-                        query = $"{filters} {query}";
+                        query = $"({filters}) {query}";
                     }
 
                     bool completed = false;

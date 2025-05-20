@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - If no logs are returned from `Task<string> WithLogs(AsyncAction action, bool includeStackTrace = true)` it no longer raises an exception.
 
+- Surround `search` filters with `()` so that a compound filter doesn't end up ignoring the asset name query.
+
 
 ## [0.2.0] - 2025-05-16
 
