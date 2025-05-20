@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `get_state` returns whether the current stage is in prefab isolation mode or not.
 
+- Description of `screenshot` tool specifies reuqirements of the MCP client in order to consume it.
+
+- Taking screenshots during `test_active_scene` is now optional and specified by a parameter.
+
+- Returning an image preview of a model in `get_asset_contents` is now optional and specifieid by a parameter.
+
 ### Fixed
 
 - Wait for preview to load before returning model asset so that the preview is returned reliably.
@@ -20,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - If no logs are returned from `Task<string> WithLogs(AsyncAction action, bool includeStackTrace = true)` it no longer raises an exception.
 
 - Surround `search` filters with `()` so that a compound filter doesn't end up ignoring the asset name query.
+
+- `test_active_scene` actually runs the specified amount of time.
+
+- Fix occasional crashes focusing the window in `test_active_scene`.
 
 
 ## [0.2.0] - 2025-05-16

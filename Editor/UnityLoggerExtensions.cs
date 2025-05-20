@@ -58,7 +58,7 @@ namespace Nurture.MCP.Editor
             else
             {
                 return "";
-            }   
+            }
         }
 
         public static async Task<WithLogResult<T>> WithLogs<T>(

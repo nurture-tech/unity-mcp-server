@@ -274,7 +274,12 @@ namespace Nurture.MCP.Editor.Services
             SynchronizationContext context,
             IProgress<ProgressNotificationValue> progress,
             CancellationToken cancellationToken,
-            [Description("The number of seconds to run the scene.")] int secondsToRun = 5
+            [Description("The number of seconds to run the scene.")] int secondsToRun = 5,
+            [Description(
+                @"If true, take a screenshot every second.
+            Only set this to true if the LLM model being used can interpret image data and the MCP client supports handling image content."
+            )]
+                bool takeScreenshots = false
         )
         {
             return context.Run(
@@ -295,7 +300,7 @@ namespace Nurture.MCP.Editor.Services
                     var result = await UnityLoggerExtensions.WithLogs(async () =>
                     {
                         // Start play mode
-                        EditorWindow.focusedWindow.Focus();
+                        await EditorExtensions.FocusSceneView(cancellationToken);
 
                         // Don't reload assemblies when entering play mode as that will break the MCP connection
                         var savedEnterPlayModeOptions = EditorSettings.enterPlayModeOptions;
@@ -317,14 +322,18 @@ namespace Nurture.MCP.Editor.Services
                             await Task.Delay(100);
                         }
 
+                        float expires = Time.time + secondsToRun;
+
                         // Play for run time
-                        while (secondsToRun > 0)
+                        while (Time.time < expires && EditorApplication.isPlaying)
                         {
                             progress.Report(
                                 new ProgressNotificationValue()
                                 {
                                     Message = $"Running for {secondsToRun} seconds...",
-                                    Progress = 0.5f + (0.4f * (secondsToRun / (float)secondsToRun)),
+                                    Progress =
+                                        0.5f
+                                        + (0.4f * ((expires - Time.time) / (float)secondsToRun)),
                                     Total = 1.0f,
                                 }
                             );
@@ -332,12 +341,13 @@ namespace Nurture.MCP.Editor.Services
                             await Task.Delay(1000);
 
                             // Take a screenshot
-                            await Awaitable.EndOfFrameAsync();
-                            var texture = ScreenCapture.CaptureScreenshotAsTexture();
-                            screenshots.Add(texture.GetPngBase64());
-                            UnityEngine.Object.Destroy(texture);
-
-                            secondsToRun--;
+                            if (takeScreenshots)
+                            {
+                                await Awaitable.EndOfFrameAsync();
+                                var texture = ScreenCapture.CaptureScreenshotAsTexture();
+                                screenshots.Add(texture.GetPngBase64());
+                                UnityEngine.Object.Destroy(texture);
+                            }
                         }
 
                         EditorApplication.isPlaying = false;
@@ -357,12 +367,19 @@ namespace Nurture.MCP.Editor.Services
                         EditorSettings.enterPlayModeOptions = savedEnterPlayModeOptions;
                     });
 
+                    var msg = $"Log messages: \n{result}.";
+
+                    if (screenshots.Count > 0)
+                    {
+                        msg += $"\n\nScreenshots are attached.";
+                    }
+
                     var results = new List<Content>
                     {
                         new()
                         {
                             Type = "text",
-                            Text = $"Log messages: \n{result}. \n\nScreenshots are attached.",
+                            Text = msg,
                             MimeType = "text/plain",
                         },
                     };
