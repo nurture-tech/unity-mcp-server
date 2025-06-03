@@ -12,6 +12,7 @@ using ModelContextProtocol.Server;
 using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
+using UnityEditor.SceneManagement;
 
 namespace Nurture.MCP.Editor.Services
 {
@@ -36,6 +37,9 @@ namespace Nurture.MCP.Editor.Services
             public string Name { get; set; }
             public string HierarchyPath { get; set; }
             public string ScenePath { get; set; }
+            public bool IsInIsolatedPrefab { get; set; }
+            public bool IsInLoadedScene { get; set; }
+            public StateService.EditingPrefab? EditingPrefab { get; set; }
         }
 
         public record SearchResultUnityObject
@@ -174,6 +178,11 @@ namespace Nurture.MCP.Editor.Services
                             GameObject obj =
                                 result.provider.toObject(result, typeof(GameObject)) as GameObject;
 
+                            var prefabStage = StageUtility.GetCurrentStage() as PrefabStage;
+                            var isRootIsolatedPrefab =
+                                prefabStage != null
+                                && obj.transform.root == prefabStage.prefabContentsRoot.transform;
+
                             results.Add(
                                 new McPSearchResultEntry()
                                 {
@@ -181,7 +190,10 @@ namespace Nurture.MCP.Editor.Services
                                     Data = new SearchResultGameObject()
                                     {
                                         Name = obj.name,
-                                        HierarchyPath = SearchUtils.GetTransformPath(obj.transform),
+                                        HierarchyPath = SearchUtilsExtensions.GetTransformPath(
+                                            obj.transform,
+                                            isRootIsolatedPrefab
+                                        ),
                                         ScenePath = obj.scene.path,
                                     },
                                 }

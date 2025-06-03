@@ -16,6 +16,7 @@ using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEditor.SceneManagement;
 
 namespace Nurture.MCP.Editor.Services
 {
@@ -33,8 +34,11 @@ namespace Nurture.MCP.Editor.Services
 
         public record SelectedAssetEntry : AssetIndexEntry
         {
-            public bool InActiveScene { get; set; }
-            public string HierarchyPath { get; set; }
+            public bool InLoadedScene { get; set; }
+            public bool InIsolatedPrefab { get; set; }
+            public string? HierarchyPath { get; set; }
+            public string? ScenePath { get; set; }
+            public StateService.EditingPrefab? EditingPrefab { get; set; }
         }
 
         public struct CreatedAssetEntry
@@ -585,15 +589,33 @@ namespace Nurture.MCP.Editor.Services
 
                         if (fileID == 0 && o is GameObject gameObject)
                         {
+                            var prefabStage = StageUtility.GetCurrentStage() as PrefabStage;
+                            var isRootIsolatedPrefab =
+                                prefabStage != null
+                                && gameObject.transform.root
+                                    == prefabStage.prefabContentsRoot.transform;
+
                             result.Add(
                                 new SelectedAssetEntry()
                                 {
                                     Type = o.GetType().AssemblyQualifiedName,
                                     Name = o.name,
-                                    InActiveScene = true,
-                                    HierarchyPath = SearchUtils.GetTransformPath(
-                                        gameObject.transform
+                                    InLoadedScene = !isRootIsolatedPrefab,
+                                    InIsolatedPrefab = isRootIsolatedPrefab,
+                                    HierarchyPath = SearchUtilsExtensions.GetTransformPath(
+                                        gameObject.transform,
+                                        isRootIsolatedPrefab
                                     ),
+                                    ScenePath = isRootIsolatedPrefab ? null : gameObject.scene.path,
+                                    EditingPrefab = isRootIsolatedPrefab
+                                        ? new()
+                                        {
+                                            Path = prefabStage.assetPath,
+                                            Guid = AssetDatabase.AssetPathToGUID(
+                                                prefabStage.assetPath
+                                            ),
+                                        }
+                                        : null,
                                 }
                             );
                         }
@@ -607,7 +629,8 @@ namespace Nurture.MCP.Editor.Services
                                     Path = AssetDatabase.GetAssetPath(o),
                                     Type = o.GetType().AssemblyQualifiedName,
                                     Name = o.name,
-                                    InActiveScene = false,
+                                    InLoadedScene = false,
+                                    InIsolatedPrefab = false,
                                 }
                             );
                         }

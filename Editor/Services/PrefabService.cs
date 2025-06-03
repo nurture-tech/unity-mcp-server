@@ -56,8 +56,8 @@ namespace Nurture.MCP.Editor.Services
                     BuildIndex = 0,
                     RootGameObjects = prefab
                         .GetComponentsInChildren<Transform>()
-                        .Where(t => t.parent == prefab.transform)
-                        .Select(t => $"/{t.name}")
+                        .Where(t => t.parent == prefab.transform || t.parent == null)
+                        .Select(t => t.parent == prefab.transform ? $"/{t.name}" : "/")
                         .ToList(),
                 };
             });
