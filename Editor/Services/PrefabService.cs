@@ -22,7 +22,7 @@ namespace Nurture.MCP.Editor.Services
             Title = "Open Unity Prefab",
             Name = "open_prefab"
         )]
-        [Description("Open a Unity prefab so that it can be edited.")]
+        [Description("Open a Unity prefab in isolation mode so that it can be edited.")]
         internal static async Task<SceneService.SceneIndexEntry> OpenPrefab(
             SynchronizationContext context,
             IProgress<ProgressNotificationValue> progress,
@@ -56,7 +56,8 @@ namespace Nurture.MCP.Editor.Services
                     BuildIndex = 0,
                     RootGameObjects = prefab
                         .GetComponentsInChildren<Transform>()
-                        .Select(t => t.name)
+                        .Where(t => t.parent == prefab.transform)
+                        .Select(t => $"/{t.name}")
                         .ToList(),
                 };
             });
