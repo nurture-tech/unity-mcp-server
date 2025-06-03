@@ -229,29 +229,50 @@ namespace Nurture.MCP.Editor.Services
         )]
         internal static async Task<GameObjectData> GetGameObject(
             SynchronizationContext context,
+            CancellationToken cancellationToken,
             string hierarchyPath,
             [Description("Whether to return the components of the game object.")]
                 bool expandComponents,
             [Description("Whether to return the children of the game object.")] bool expandChildren,
-            CancellationToken cancellationToken
+            [Description(
+                "Whether to search for the game object in the prefab open in isolation mode."
+            )]
+                bool searchIsolatedPrefab
         )
         {
             return await context.Run(
                 () =>
                 {
-                    var go = GameObject.Find(hierarchyPath);
+                    GameObject go = null;
+
+                    if (searchIsolatedPrefab)
+                    {
+                        var stage = StageUtility.GetCurrentStage() as PrefabStage;
+
+                        if (stage == null)
+                        {
+                            throw new McpException("No prefab is open in isolation mode.");
+                        }
+
+                        if (hierarchyPath == "/")
+                        {
+                            go = stage.prefabContentsRoot.gameObject;
+                        }
+                        else
+                        {
+                            var prefab = stage.prefabContentsRoot;
+                            go = prefab.transform.Find(hierarchyPath.Substring(1))?.gameObject;
+                        }
+                    }
+                    else
+                    {
+                        go = GameObject.Find(hierarchyPath);
+                    }
 
                     if (go == null)
                     {
                         throw new McpException("The game object is not found.");
                     }
-
-                    bool isPrefab = PrefabUtility.IsPartOfAnyPrefab(go);
-                    string prefabRoot = isPrefab
-                        ? SearchUtils.GetTransformPath(
-                            PrefabUtility.GetNearestPrefabInstanceRoot(go).transform
-                        )
-                        : null;
 
                     return SerializeGameObject(go, expandComponents, expandChildren);
                 },
@@ -405,9 +426,15 @@ namespace Nurture.MCP.Editor.Services
         )
         {
             bool isPrefab = PrefabUtility.IsPartOfAnyPrefab(go);
+            var prefabStage = StageUtility.GetCurrentStage() as PrefabStage;
+            var isRootIsolatedPrefab =
+                prefabStage != null
+                && go.transform.root == prefabStage.prefabContentsRoot.transform;
+
             string prefabRoot = isPrefab
-                ? SearchUtils.GetTransformPath(
-                    PrefabUtility.GetNearestPrefabInstanceRoot(go).transform
+                ? SearchUtilsExtensions.GetTransformPath(
+                    PrefabUtility.GetNearestPrefabInstanceRoot(go).transform,
+                    isRootIsolatedPrefab
                 )
                 : null;
 
@@ -417,7 +444,10 @@ namespace Nurture.MCP.Editor.Services
                 ActiveInHierarchy = go.activeInHierarchy,
                 IsPartOfPrefab = isPrefab,
                 PrefabRoot = prefabRoot,
-                HierarchyPath = SearchUtils.GetTransformPath(go.transform),
+                HierarchyPath = SearchUtilsExtensions.GetTransformPath(
+                    go.transform,
+                    isRootIsolatedPrefab
+                ),
                 Components = expandComponents
                     ? go.GetComponents<UnityEngine.Component>().Select(SerializeComponent).ToList()
                     : null,

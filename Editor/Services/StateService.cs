@@ -14,7 +14,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 
-namespace Nurture.Mcp.Editor.Services
+namespace Nurture.MCP.Editor.Services
 {
     [McpServerToolType]
     public static class StateService

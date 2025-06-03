@@ -11,9 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - In `get_state`, return information about the opened prefab, if any.
 
+- In `get_selection` and `search` in heirarchy mode, return whether a game object is in the prefab isolation heirarchy or the scene heirarchy.
+
 ### Changed
 
 - Document that opening a prefab will activate isolation mode.
+
+- When retrieving the hierarchy path for a gameobject in prefab isolation mode, treat "/" as the root gameobject instead of "/GameObjectName".
+
+### Fixed
+
+- Only return one level of game objects in the results for `open_prefab`.
 
 ## [0.2.2]   - 2025-06-03
 
