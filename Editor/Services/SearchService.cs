@@ -13,6 +13,7 @@ using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
 using UnityEditor.SceneManagement;
+using System.Text.Json.Serialization;
 
 namespace Nurture.MCP.Editor.Services
 {
@@ -51,6 +52,19 @@ namespace Nurture.MCP.Editor.Services
             public string Path { get; set; }
         }
 
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public enum Location
+        {
+            [Description("Search assets and hierarchy.")]
+            Everywhere = 0,
+
+            [Description("Search only objects in loaded scenes or stages.")]
+            Hierarchy = 1,
+
+            [Description("Search only assets in the project.")]
+            Project = 2,
+        }
+
         [McpServerTool(
             Destructive = false,
             Idempotent = false,
@@ -75,15 +89,16 @@ namespace Nurture.MCP.Editor.Services
                     - `t:Camera` will find all gameobjects in the scene and/or prefabs in the project with a Camera component.
                     - `sprite:Tuna` will find all gameobjects containing components with a `sprite` property that refers to an asset named `Tuna`.
                     - `t:Mesh` will find models.
-                    - `h:` prefix will find objects just in open scenes.
                     - `t:Mesh or t:Prefab` will find all assets that are models or prefabs.
-                    - `h: t:Mesh` will find all meshes in open scenes.
+                    - `t:Mesh` will find all meshes.
+                    - `ref={t:Mesh}` will find all assets that reference a mesh.
+                    - `ref={Assets/Prefabs/Tuna.prefab}` will find all assets that reference the Tuna prefab.
                 Invalid examples:
-                    - `t:Mesh t:Prefab` is invalid because an asset can't be two types.
-                    - `t:Mesh h:` is invalid because `h:` cannot be used as a suffix."
+                    - `t:Mesh t:Prefab` is invalid because an asset can't be two types."
             )]
                 string filters = "",
-            [Description("The cursor to start the search from.")] int cursor = 0
+            [Description("The cursor to start the search from.")] int cursor = 0,
+            [Description("The location to search.")] Location location = Location.Everywhere
         )
         {
             return await context.Run(
@@ -138,6 +153,18 @@ namespace Nurture.MCP.Editor.Services
                     if (filters?.Length > 0)
                     {
                         query = $"({filters}) {query}";
+                    }
+
+                    switch (location)
+                    {
+                        case Location.Hierarchy:
+                            query = $"h: {query}";
+                            break;
+                        case Location.Project:
+                            query = $"p: {query}";
+                            break;
+                        case Location.Everywhere:
+                            break;
                     }
 
                     bool completed = false;

@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Only return one level of game objects in the results for `open_prefab`.
 
+- Compound search filters now work properly with `h:` and `p:` filters. These do not support grouping so they are now controlled by an additional parameter to the `search` tool.
+
 ## [0.2.2]   - 2025-06-03
 
 ### Added
