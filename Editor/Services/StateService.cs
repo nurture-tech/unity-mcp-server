@@ -32,6 +32,7 @@ namespace Nurture.MCP.Editor.Services
         {
             public string Path { get; set; }
             public string Guid { get; set; }
+            public List<string> RootGameObjects { get; set; }
         }
 
         [McpServerTool(
@@ -97,6 +98,18 @@ namespace Nurture.MCP.Editor.Services
                                     Guid = AssetDatabase.AssetPathToGUID(
                                         prefabStage.prefabAssetPath
                                     ),
+                                    RootGameObjects = prefabStage
+                                        .prefabContentsRoot.GetComponentsInChildren<Transform>()
+                                        .Where(t =>
+                                            t.parent == prefabStage.prefabContentsRoot.transform
+                                            || t.parent == null
+                                        )
+                                        .Select(t =>
+                                            t.parent == prefabStage.prefabContentsRoot.transform
+                                                ? $"/{t.name}"
+                                                : "/"
+                                        )
+                                        .ToList(),
                                 }
                                 : null,
                     };
