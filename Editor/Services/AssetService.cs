@@ -518,19 +518,17 @@ namespace Nurture.MCP.Editor.Services
                 {
                     await EditorExtensions.EnsureNotPlaying(progress, cancellationToken, 0.1f);
 
-                    if (srcPath == dstPath)
+                    if (srcPath != dstPath)
                     {
-                        throw new McpException("Source and destination paths are the same");
+                        Directory.CreateDirectory(Path.GetDirectoryName(dstPath));
+
+                        if (!File.Exists(srcPath))
+                        {
+                            throw new McpException($"Source asset {srcPath} does not exist");
+                        }
+
+                        File.Copy(srcPath, dstPath, true);
                     }
-
-                    Directory.CreateDirectory(Path.GetDirectoryName(dstPath));
-
-                    if (!File.Exists(srcPath))
-                    {
-                        throw new McpException($"Source asset {srcPath} does not exist");
-                    }
-
-                    File.Copy(srcPath, dstPath, true);
 
                     AssetDatabase.ImportAsset(dstPath, ImportAssetOptions.Default);
 
