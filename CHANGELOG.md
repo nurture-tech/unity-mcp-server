@@ -11,9 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Throw a more specific exception if source file is missing when using `copy_asset` and `import_asset`.
 
+### Changed
+
+- `supportsImages` parameter renamed to `showThumbnails`.
+
 ### Fixed
 
 - Correct exception and stack trace is returned when `execute_code` throws an exception to allow for correction.
+
+- `showThumbnails` parameter is respected when retrieving mesh and texture assets.
+
+- Remove language about when to use the `screenshot` tool to avoid LLMs from erroneously avoiding using it.
 
 
 ## [0.2.1] - 2025-05-19

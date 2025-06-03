@@ -275,11 +275,7 @@ namespace Nurture.MCP.Editor.Services
             IProgress<ProgressNotificationValue> progress,
             CancellationToken cancellationToken,
             [Description("The number of seconds to run the scene.")] int secondsToRun = 5,
-            [Description(
-                @"If true, take a screenshot every second.
-            Only set this to true if the LLM model being used can interpret image data and the MCP client supports handling image content."
-            )]
-                bool takeScreenshots = false
+            [Description(@"If true, take a screenshot every second.")] bool takeScreenshots = false
         )
         {
             return context.Run(
