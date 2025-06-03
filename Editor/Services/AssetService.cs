@@ -184,10 +184,8 @@ namespace Nurture.MCP.Editor.Services
             IProgress<ProgressNotificationValue> progress,
             string guid,
             string fileID,
-            [Description(
-                "If true, the LLM model being used can interpret image data and the MCP client supports handling image content."
-            )]
-                bool supportsImages = false
+            [Description("If true, return thumbnails for images and meshes.")]
+                bool showThumbnails = false
         )
         {
             // TODO: Make a bulk version of this that can get multiple assets at once
@@ -215,13 +213,13 @@ namespace Nurture.MCP.Editor.Services
 
                     return asset switch
                     {
-                        Texture2D texture => FormatTexture(texture),
-                        Mesh mesh => FormatMesh(mesh),
+                        Texture2D texture => FormatTexture(texture, showThumbnails),
+                        Mesh mesh => FormatMesh(mesh, progress, cancellationToken, showThumbnails),
                         GameObject gameObject => FormatGameObject(
                             gameObject,
                             progress,
                             cancellationToken,
-                            supportsImages
+                            showThumbnails
                         ),
                         AudioClip audioClip => FormatAudioClip(audioClip),
                         // TODO: Add support for other asset types
@@ -275,14 +273,14 @@ namespace Nurture.MCP.Editor.Services
             [Description(
                 "If true, the LLM model being used can interpret image data and the MCP client supports handling image content."
             )]
-                bool supportsImages
+                bool showThumbnails
         )
         {
             var assetPath = AssetDatabase.GetAssetPath(asset);
             var importer = AssetImporter.GetAtPath(assetPath);
             var result = await FormatAsset(asset);
 
-            if (importer is ModelImporter && supportsImages)
+            if (importer is ModelImporter && showThumbnails)
             {
                 var preview = AssetPreview.GetAssetPreview(asset);
 
@@ -335,7 +333,7 @@ namespace Nurture.MCP.Editor.Services
             );
         }
 
-        private static Task<List<Content>> FormatTexture(Texture2D asset)
+        private static Task<List<Content>> FormatTexture(Texture2D asset, bool showThumbnail)
         {
             string base64 = asset.GetPngBase64();
 
@@ -345,36 +343,49 @@ namespace Nurture.MCP.Editor.Services
                 Size = new MCPVector2() { x = asset.width, y = asset.height },
             };
 
-            return Task.FromResult(
-                new List<Content>()
-                {
-                    new()
+            if (showThumbnail)
+            {
+                return Task.FromResult(
+                    new List<Content>()
                     {
-                        Type = "text",
-                        Text = JsonSerializer.Serialize(textureInfo),
-                        MimeType = "application/json",
-                    },
-                    new()
+                        new()
+                        {
+                            Type = "text",
+                            Text = JsonSerializer.Serialize(textureInfo),
+                            MimeType = "application/json",
+                        },
+                        new()
+                        {
+                            Type = "image",
+                            Data = base64,
+                            MimeType = "image/png",
+                        },
+                    }
+                );
+            }
+            else
+            {
+                return Task.FromResult(
+                    new List<Content>()
                     {
-                        Type = "image",
-                        Data = base64,
-                        MimeType = "image/png",
-                    },
-                }
-            );
+                        new()
+                        {
+                            Type = "text",
+                            Text = JsonSerializer.Serialize(textureInfo),
+                            MimeType = "application/json",
+                        },
+                    }
+                );
+            }
         }
 
-        private static async Task<List<Content>> FormatMesh(Mesh asset)
+        private static async Task<List<Content>> FormatMesh(
+            Mesh asset,
+            IProgress<ProgressNotificationValue> progress,
+            CancellationToken cancellationToken,
+            bool showThumbnail
+        )
         {
-            while (AssetPreview.IsLoadingAssetPreviews())
-            {
-                await Task.Delay(100);
-            }
-
-            var preview =
-                AssetPreview.GetAssetPreview(asset)
-                ?? throw new McpException("Failed to get asset preview");
-
             string data = JsonSerializer.Serialize(
                 new MeshInfo()
                 {
@@ -384,23 +395,57 @@ namespace Nurture.MCP.Editor.Services
                 }
             );
 
-            string base64 = preview.GetPngBase64();
-
-            return new List<Content>()
+            if (showThumbnail)
             {
-                new()
+                var preview =
+                    AssetPreview.GetAssetPreview(asset)
+                    ?? throw new McpException("Failed to get asset preview");
+
+                while (AssetPreview.IsLoadingAssetPreviews())
                 {
-                    Type = "text",
-                    Text = data,
-                    MimeType = "application/json",
-                },
-                new()
+                    progress.Report(
+                        new ProgressNotificationValue()
+                        {
+                            Progress = 0.5f,
+                            Message = "Loading asset preview...",
+                        }
+                    );
+                    await Task.Delay(100);
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return new List<Content>();
+                    }
+                }
+
+                string base64 = preview.GetPngBase64();
+                return new List<Content>()
                 {
-                    Type = "image",
-                    Data = base64,
-                    MimeType = "image/png",
-                },
-            };
+                    new()
+                    {
+                        Type = "text",
+                        Text = data,
+                        MimeType = "application/json",
+                    },
+                    new()
+                    {
+                        Type = "image",
+                        Data = base64,
+                        MimeType = "image/png",
+                    },
+                };
+            }
+            else
+            {
+                return new List<Content>()
+                {
+                    new()
+                    {
+                        Type = "text",
+                        Text = data,
+                        MimeType = "application/json",
+                    },
+                };
+            }
         }
 
         [McpServerTool(
