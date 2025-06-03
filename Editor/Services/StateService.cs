@@ -25,6 +25,13 @@ namespace Nurture.Mcp.Editor.Services
             public string UnityVersion { get; set; }
             public bool IsPlaying { get; set; }
             public bool InPrefabIsolationMode { get; set; }
+            public EditingPrefab? EditingPrefab { get; set; }
+        }
+
+        public struct EditingPrefab
+        {
+            public string Path { get; set; }
+            public string Guid { get; set; }
         }
 
         [McpServerTool(
@@ -74,12 +81,24 @@ namespace Nurture.Mcp.Editor.Services
                         );
                     }
 
+                    var prefabStage = StageUtility.GetCurrentStage() as PrefabStage;
+
                     return new UnityState()
                     {
                         OpenScenes = openScenes,
                         UnityVersion = Application.unityVersion,
                         IsPlaying = EditorApplication.isPlaying,
-                        InPrefabIsolationMode = StageUtility.GetCurrentStage() is PrefabStage,
+                        InPrefabIsolationMode = prefabStage != null,
+                        EditingPrefab =
+                            prefabStage != null
+                                ? new()
+                                {
+                                    Path = prefabStage.prefabAssetPath,
+                                    Guid = AssetDatabase.AssetPathToGUID(
+                                        prefabStage.prefabAssetPath
+                                    ),
+                                }
+                                : null,
                     };
                 },
                 cancellationToken
