@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - In `get_selection` and `search` in hierarchy mode, return whether a game object is in the prefab isolation hierarchy or the scene hierarchy.
 
+- If the `srcPath` and the `dstPath` are the same in `import_asset` we still import it without copying it.
+
 ### Changed
 
 - Document that opening a prefab will activate isolation mode.
