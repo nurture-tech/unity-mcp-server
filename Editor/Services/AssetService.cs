@@ -55,6 +55,13 @@ namespace Nurture.MCP.Editor.Services
             public string Name { get; set; }
             public MCPVector2 Size { get; set; }
         }
+        public record Content
+        {
+            public string Type { get; init; }
+            public string MimeType { get; init; }
+            public string? Text { get; init; }
+            public string? Data { get; init; }
+        }
 
         public struct MeshInfo
         {
