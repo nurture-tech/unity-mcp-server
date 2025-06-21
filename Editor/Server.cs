@@ -19,18 +19,12 @@ namespace Nurture.MCP.Editor
     public class Server
     {
         private static HttpServer _httpServer;
-        private static List<Action> _afterToolCallActions = new();
 
         static Server()
         {
             // Register for domain reload to stop the server
             AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
             Start();
-        }
-
-        public static void RunAfterToolCall(Action action)
-        {
-            _afterToolCallActions.Add(action);
         }
 
         private static void OnBeforeAssemblyReload()
@@ -83,18 +77,6 @@ namespace Nurture.MCP.Editor
 
             _httpServer = new HttpServer("http://localhost:5000/", options, services);
             _httpServer.Start();
-
-            EditorApplication.update += OnUpdate;
-        }
-
-        private static void OnUpdate()
-        {
-            foreach (var action in _afterToolCallActions)
-            {
-                action();
-            }
-
-            _afterToolCallActions.Clear();
         }
 
         private static void CollectTools(
