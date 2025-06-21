@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Nurture.MCP.Editor
 {
@@ -75,7 +76,7 @@ namespace Nurture.MCP.Editor
 
         private static async Task RunServer()
         {
-            using var loggerFactory = new UnityLoggerFactory();
+            using var loggerFactory = new UnityLoggerFactory(new LogLevel[] { LogLevel.Error, LogLevel.Critical, LogLevel.Warning });
             await using var stdioTransport = new StdioServerTransport(_options, loggerFactory);
             await using IMcpServer server = McpServerFactory.Create(
                 stdioTransport,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -9,10 +10,12 @@ namespace Nurture.MCP.Editor
     class UnityMcpLogger : ILogger
     {
         private readonly string _categoryName;
+        private readonly LogLevel[] _levels;
 
-        public UnityMcpLogger(string categoryName = null)
+        public UnityMcpLogger(string categoryName = null, LogLevel[] levels = null)
         {
             _categoryName = categoryName;
+            _levels = levels;
         }
 
         public IDisposable BeginScope<TState>(TState state)
@@ -23,7 +26,7 @@ namespace Nurture.MCP.Editor
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            return true;
+            return _levels == null || _levels.Contains(logLevel);
         }
 
         public void Log<TState>(
@@ -40,11 +43,18 @@ namespace Nurture.MCP.Editor
 
     class UnityLoggerFactory : ILoggerFactory
     {
+        private LogLevel[] _levels;
+        
+        public UnityLoggerFactory(LogLevel[] levels)
+        {
+            _levels = levels;
+        }
+        
         public void Dispose() { }
 
         public ILogger CreateLogger(string categoryName)
         {
-            return new UnityMcpLogger(categoryName);
+            return new UnityMcpLogger(categoryName, _levels);
         }
 
         public void AddProvider(ILoggerProvider provider)
