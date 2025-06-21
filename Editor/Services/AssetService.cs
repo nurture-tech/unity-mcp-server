@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.AI;
 using ModelContextProtocol;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
@@ -317,13 +318,7 @@ namespace Nurture.MCP.Editor.Services
             string data = EditorJsonUtility.ToJson(asset);
 
             return Task.FromResult(
-                new List<ContentBlock>()
-                {
-                    new TextContentBlock()
-                    {
-                        Text = data
-                    },
-                }
+                new List<ContentBlock>() { new TextContentBlock() { Text = data } }
             );
         }
 
@@ -340,17 +335,14 @@ namespace Nurture.MCP.Editor.Services
             if (showThumbnail)
             {
                 return Task.FromResult(
-                    new List<Content>()
+                    new List<ContentBlock>()
                     {
-                        new()
+                        new TextContentBlock()
                         {
-                            Type = "text",
                             Text = JsonSerializer.Serialize(textureInfo),
-                            MimeType = "application/json",
                         },
-                        new()
+                        new ImageContentBlock()
                         {
-                            Type = "image",
                             Data = base64,
                             MimeType = "image/png",
                         },
@@ -360,13 +352,11 @@ namespace Nurture.MCP.Editor.Services
             else
             {
                 return Task.FromResult(
-                    new List<Content>()
+                    new List<ContentBlock>()
                     {
-                        new()
+                        new TextContentBlock()
                         {
-                            Type = "text",
                             Text = JsonSerializer.Serialize(textureInfo),
-                            MimeType = "application/json",
                         },
                     }
                 );
