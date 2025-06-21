@@ -15,7 +15,8 @@ namespace Nurture.MCP.Editor
     [InitializeOnLoad]
     public class Server
     {
-        private static StdioServerTransport _transport;
+        private static CancellationTokenSource _cancellationTokenSource;
+        private static McpServerOptions _options;
 
         static Server()
         {
@@ -26,6 +27,7 @@ namespace Nurture.MCP.Editor
 
         private static void OnBeforeAssemblyReload()
         {
+            AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
             Stop();
         }
 
@@ -33,7 +35,7 @@ namespace Nurture.MCP.Editor
         {
             Debug.Log("[MCP] Starting server");
 
-            McpServerOptions options = new()
+            _options = new()
             {
                 ServerInfo = new() { Name = "Nurture Unity MCP", Version = "1.0.0" },
                 Capabilities = new(),
@@ -48,10 +50,24 @@ namespace Nurture.MCP.Editor
 
             var toolOptions = new McpServerToolCreateOptions() { Services = services };
 
-            CollectTools(options, toolOptions);
-            CollectPrompts(options);
+            CollectTools(_options, toolOptions);
+            CollectPrompts(_options);
 
-            _transport = new StdioServerTransport(options, new UnityLoggerFactory());
+            _cancellationTokenSource = new();
+
+            Task.Run(RunServer);
+        }
+
+        private static async Task RunServer()
+        {
+            using var loggerFactory = new UnityLoggerFactory();
+            await using var stdioTransport = new StdioServerTransport(_options, loggerFactory);
+            await using IMcpServer server = McpServerFactory.Create(
+                stdioTransport,
+                _options,
+                loggerFactory
+            );
+            await server.RunAsync(_cancellationTokenSource.Token);
         }
 
         private static void CollectTools(
@@ -130,10 +146,11 @@ namespace Nurture.MCP.Editor
             }
         }
 
-        private static async Task Stop()
+        private static void Stop()
         {
-            await _transport.DisposeAsync();
-            _transport = null;
+            Debug.Log("[MCP] Stopping server");
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = null;
         }
     }
 }
