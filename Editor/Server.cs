@@ -1,5 +1,6 @@
 #if !NO_MCP
 
+using System;
 using UnityEditor;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
@@ -72,6 +73,7 @@ namespace Nurture.MCP.Editor
         private static async Task RunServer()
         {
             using var loggerFactory = new UnityLoggerFactory();
+            Debug.Log("[MCP] Server started");
             await using var stdioTransport = new StdioServerTransport(_options, loggerFactory);
             await using IMcpServer server = McpServerFactory.Create(
                 stdioTransport,
