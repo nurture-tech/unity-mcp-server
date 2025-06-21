@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -93,39 +92,6 @@ namespace Nurture.MCP.Editor
             }
         }
 
-        private class DebugLogger : Microsoft.Extensions.Logging.ILogger
-        {
-            public IDisposable BeginScope<TState>(TState state)
-                where TState : notnull
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool IsEnabled(LogLevel logLevel)
-            {
-                return true;
-            }
-
-            public void Log<TState>(
-                LogLevel logLevel,
-                EventId eventId,
-                TState state,
-                Exception exception,
-                Func<TState, Exception, string> formatter
-            )
-            {
-                Debug.Log($"[MCP] {logLevel}: {formatter(state, exception)}");
-            }
-        }
-
-        private class DebugLoggerProvider : ILoggerProvider
-        {
-            public Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName) =>
-                new DebugLogger();
-
-            public void Dispose() { }
-        }
-
         private readonly HttpListener _listener;
         private readonly McpServerOptions _options;
         private readonly ILoggerFactory _loggerFactory;
@@ -145,7 +111,7 @@ namespace Nurture.MCP.Editor
             _cancellationTokenSource = new CancellationTokenSource();
             _services = services;
             _loggerFactory = LoggerFactory.Create(builder =>
-                builder.AddProvider(new DebugLoggerProvider())
+                builder.AddProvider(new UnityMcpLoggerProvider())
             );
         }
 

@@ -8,17 +8,14 @@ using System.Reflection;
 using System.Linq;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
-using System;
 using System.Threading.Tasks;
-using System.Text.Json.Nodes;
 
 namespace Nurture.MCP.Editor
 {
     [InitializeOnLoad]
     public class Server
     {
-        private static HttpServer _httpServer;
+        private static StdioServerTransport _transport;
 
         static Server()
         {
@@ -49,34 +46,12 @@ namespace Nurture.MCP.Editor
                 .AddSingleton(SynchronizationContext.Current)
                 .BuildServiceProvider();
 
-            var toolOptions = new McpServerToolCreateOptions()
-            {
-                Services = services,
-
-                SchemaCreateOptions = new()
-                {
-                    TransformSchemaNode = (context, node) =>
-                    {
-                        // If the node contains a property called "type" which is an array, convert it to a string value containing the first element of the array.
-                        if (
-                            node is JsonObject jsonObject
-                            && jsonObject.TryGetPropertyValue("type", out var typeProperty)
-                            && typeProperty is JsonArray typeArray
-                        )
-                        {
-                            typeArray.ReplaceWith(JsonValue.Create(typeArray[0].ToString()));
-                        }
-
-                        return node;
-                    },
-                },
-            };
+            var toolOptions = new McpServerToolCreateOptions() { Services = services };
 
             CollectTools(options, toolOptions);
             CollectPrompts(options);
 
-            _httpServer = new HttpServer("http://localhost:5000/", options, services);
-            _httpServer.Start();
+            _transport = new StdioServerTransport(options, new UnityLoggerFactory());
         }
 
         private static void CollectTools(
@@ -157,8 +132,8 @@ namespace Nurture.MCP.Editor
 
         private static async Task Stop()
         {
-            await _httpServer.Stop();
-            _httpServer = null;
+            await _transport.DisposeAsync();
+            _transport = null;
         }
     }
 }
