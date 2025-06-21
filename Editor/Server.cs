@@ -22,6 +22,17 @@ namespace Nurture.MCP.Editor
         {
             // Register for domain reload to stop the server
             AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+
+            // Get whether "-mcp" command line parameter was passed to Unity
+            bool mcp = System
+                .Environment.GetCommandLineArgs()
+                .Any(arg => string.Equals(arg, "-mcp", System.StringComparison.OrdinalIgnoreCase));
+
+            if (!mcp)
+            {
+                return;
+            }
+
             Start();
         }
 
