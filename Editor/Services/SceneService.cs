@@ -270,7 +270,7 @@ namespace Nurture.MCP.Editor.Services
         [Description(
             "Test the active scene by entering play mode and running for a given number of seconds."
         )]
-        internal static Task<List<Content>> TestActiveScene(
+        internal static Task<List<ContentBlock>> TestActiveScene(
             SynchronizationContext context,
             IProgress<ProgressNotificationValue> progress,
             CancellationToken cancellationToken,
@@ -357,22 +357,19 @@ namespace Nurture.MCP.Editor.Services
                         EditorSettings.enterPlayModeOptions = savedEnterPlayModeOptions;
                     });
 
-                    var results = new List<Content>
+                    var results = new List<ContentBlock>
                     {
-                        new()
+                        new TextContentBlock()
                         {
-                            Type = "text",
                             Text = $"Log messages: \n{result}. \n\nScreenshots are attached.",
-                            MimeType = "text/plain",
                         },
                     };
 
                     foreach (var screenshot in screenshots)
                     {
                         results.Add(
-                            new Content()
+                            new ImageContentBlock()
                             {
-                                Type = "image",
                                 Data = screenshot,
                                 MimeType = "image/png",
                             }
