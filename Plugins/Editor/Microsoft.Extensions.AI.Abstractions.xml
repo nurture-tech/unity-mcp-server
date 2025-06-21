@@ -3453,6 +3453,13 @@
             </para>
             </remarks>
         </member>
+        <member name="P:Microsoft.Extensions.AI.AIFunction.ReturnJsonSchema">
+            <summary>Gets a JSON Schema describing the function's return value.</summary>
+            <remarks>
+            A <see langword="null"/> typically reflects a function that doesn't specify a return schema
+            or a function that returns <see cref="T:System.Void"/>, <see cref="T:System.Threading.Tasks.Task"/>, or <see cref="T:System.Threading.Tasks.ValueTask"/>.
+            </remarks>
+        </member>
         <member name="P:Microsoft.Extensions.AI.AIFunction.UnderlyingMethod">
             <summary>
             Gets the underlying <see cref="T:System.Reflection.MethodInfo"/> that this <see cref="T:Microsoft.Extensions.AI.AIFunction"/> might be wrapping.
@@ -4002,7 +4009,7 @@
             Gets a delegate for handling the marshaling of a parameter.
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.ReflectionAIFunctionDescriptor.GetReturnParameterMarshaller(Microsoft.Extensions.AI.AIFunctionFactory.ReflectionAIFunctionDescriptor.DescriptorKey,System.Text.Json.JsonSerializerOptions)">
+        <member name="M:Microsoft.Extensions.AI.AIFunctionFactory.ReflectionAIFunctionDescriptor.GetReturnParameterMarshaller(Microsoft.Extensions.AI.AIFunctionFactory.ReflectionAIFunctionDescriptor.DescriptorKey,System.Text.Json.JsonSerializerOptions,System.Type@)">
             <summary>
             Gets a delegate for handling the result value of a method, converting it into the <see cref="T:System.Threading.Tasks.Task`1"/> to return from the invocation.
             </summary>

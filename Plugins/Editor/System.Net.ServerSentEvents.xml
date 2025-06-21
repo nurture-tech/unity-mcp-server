@@ -427,5 +427,8 @@
         <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.Members">
             <summary>Gets field or property member names.</summary>
         </member>
+        <member name="T:System.ExceptionPolyfills">
+            <summary>Provides downlevel polyfills for static methods on Exception-derived types.</summary>
+        </member>
     </members>
 </doc>

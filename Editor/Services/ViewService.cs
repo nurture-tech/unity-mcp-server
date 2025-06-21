@@ -85,7 +85,7 @@ namespace Nurture.MCP.Editor.Services
             Name = "screenshot"
         )]
         [Description(@"Retrieve a preview of what is focused in the scene view.")]
-        internal static async Task<Content> TakeScreenshot(
+        internal static async Task<ImageContentBlock> TakeScreenshot(
             SynchronizationContext context,
             CancellationToken cancellationToken,
             [Description(
@@ -184,9 +184,8 @@ namespace Nurture.MCP.Editor.Services
                         UnityEngine.Object.DestroyImmediate(texture);
                     }
 
-                    return new Content()
+                    return new ImageContentBlock()
                     {
-                        Type = "image",
                         Data = screenshotBase64,
                         MimeType = "image/png",
                     };

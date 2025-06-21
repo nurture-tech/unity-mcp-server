@@ -80,7 +80,7 @@ namespace Nurture.MCP.Editor.Services
             Name = "get_asset_importer"
         )]
         [Description("Get the importer settings for an asset.")]
-        internal static Task<Content> GetAssetImporterContents(
+        internal static Task<string> GetAssetImporterContents(
             SynchronizationContext context,
             string guid,
             CancellationToken cancellationToken
@@ -101,12 +101,7 @@ namespace Nurture.MCP.Editor.Services
 
                     Selection.activeObject = asset;
 
-                    return new Content()
-                    {
-                        Type = "text",
-                        Text = data,
-                        MimeType = "application/json",
-                    };
+                    return data;
                 },
                 cancellationToken
             );
@@ -182,7 +177,7 @@ namespace Nurture.MCP.Editor.Services
             @"Get the full contents of an asset or sub-asset.
             If you don't know what the guid or fileID is, use the `search` tool to find it."
         )]
-        internal static Task<List<Content>> GetAssetContents(
+        internal static Task<List<ContentBlock>> GetAssetContents(
             SynchronizationContext context,
             CancellationToken cancellationToken,
             IProgress<ProgressNotificationValue> progress,
@@ -234,7 +229,7 @@ namespace Nurture.MCP.Editor.Services
             );
         }
 
-        private static Task<List<Content>> FormatAudioClip(AudioClip asset)
+        private static Task<List<ContentBlock>> FormatAudioClip(AudioClip asset)
         {
             /*
             using var stream = new MemoryStream();
@@ -242,11 +237,10 @@ namespace Nurture.MCP.Editor.Services
             var base64 = Convert.ToBase64String(stream.ToArray());
             */
             return Task.FromResult(
-                new List<Content>()
+                new List<ContentBlock>()
                 {
-                    new()
+                    new TextContentBlock()
                     {
-                        Type = "text",
                         Text = JsonSerializer.Serialize(
                             new AudioClipInfo()
                             {
@@ -255,8 +249,7 @@ namespace Nurture.MCP.Editor.Services
                                 Channels = asset.channels,
                                 Length = asset.length,
                             }
-                        ),
-                        MimeType = "application/json",
+                        )
                     },
                     /*
                     new()
@@ -270,7 +263,7 @@ namespace Nurture.MCP.Editor.Services
             );
         }
 
-        private static async Task<List<Content>> FormatGameObject(
+        private static async Task<List<ContentBlock>> FormatGameObject(
             GameObject asset,
             IProgress<ProgressNotificationValue> progress,
             CancellationToken cancellationToken,
@@ -307,9 +300,8 @@ namespace Nurture.MCP.Editor.Services
                 if (preview != null)
                 {
                     result.Add(
-                        new Content()
+                        new ImageContentBlock()
                         {
-                            Type = "image",
                             Data = preview.GetPngBase64(),
                             MimeType = "image/png",
                         }
@@ -320,24 +312,22 @@ namespace Nurture.MCP.Editor.Services
             return result;
         }
 
-        private static Task<List<Content>> FormatAsset(UnityEngine.Object asset)
+        private static Task<List<ContentBlock>> FormatAsset(UnityEngine.Object asset)
         {
             string data = EditorJsonUtility.ToJson(asset);
 
             return Task.FromResult(
-                new List<Content>()
+                new List<ContentBlock>()
                 {
-                    new()
+                    new TextContentBlock()
                     {
-                        Type = "text",
-                        Text = data,
-                        MimeType = "application/json",
+                        Text = data
                     },
                 }
             );
         }
 
-        private static Task<List<Content>> FormatTexture(Texture2D asset, bool showThumbnail)
+        private static Task<List<ContentBlock>> FormatTexture(Texture2D asset, bool showThumbnail)
         {
             string base64 = asset.GetPngBase64();
 
@@ -422,17 +412,14 @@ namespace Nurture.MCP.Editor.Services
                 }
 
                 string base64 = preview.GetPngBase64();
-                return new List<Content>()
+                return new List<ContentBlock>()
                 {
-                    new()
+                    new TextContentBlock()
                     {
-                        Type = "text",
                         Text = data,
-                        MimeType = "application/json",
                     },
-                    new()
+                    new ImageContentBlock()
                     {
-                        Type = "image",
                         Data = base64,
                         MimeType = "image/png",
                     },
