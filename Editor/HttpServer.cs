@@ -22,13 +22,14 @@ namespace Nurture.MCP.Editor
 {
     public class HttpServer : IDisposable
     {
-        private static readonly JsonTypeInfo<JsonRpcError> s_errorTypeInfo = GetRequiredJsonTypeInfo<JsonRpcError>();
+        private static readonly JsonTypeInfo<JsonRpcError> s_errorTypeInfo =
+            GetRequiredJsonTypeInfo<JsonRpcError>();
 
         private static readonly string s_applicationJsonMediaType = "application/json";
         private static readonly string s_textEventStreamMediaType = "text/event-stream";
 
-        
-        private static JsonTypeInfo<T> GetRequiredJsonTypeInfo<T>() => (JsonTypeInfo<T>)McpJsonUtilities.DefaultOptions.GetTypeInfo(typeof(T));
+        private static JsonTypeInfo<T> GetRequiredJsonTypeInfo<T>() =>
+            (JsonTypeInfo<T>)McpJsonUtilities.DefaultOptions.GetTypeInfo(typeof(T));
 
         private sealed class HttpDuplexPipe : IDuplexPipe
         {
@@ -44,12 +45,12 @@ namespace Nurture.MCP.Editor
         }
 
         private class HttpMcpSession<TTransport>
-        where TTransport : ITransport
+            where TTransport : ITransport
         {
             public string Id { get; private set; }
             public TTransport Transport { get; private set; }
 
-             public IMcpServer? Server { get; set; }
+            public IMcpServer? Server { get; set; }
             public Task? ServerRunTask { get; set; }
 
             private CancellationTokenSource _disposeCts = new();
@@ -73,9 +74,7 @@ namespace Nurture.MCP.Editor
                         await ServerRunTask;
                     }
                 }
-                catch (OperationCanceledException)
-                {
-                }
+                catch (OperationCanceledException) { }
                 finally
                 {
                     try
@@ -93,7 +92,6 @@ namespace Nurture.MCP.Editor
                 }
             }
         }
-
 
         private class DebugLogger : Microsoft.Extensions.Logging.ILogger
         {
@@ -134,8 +132,10 @@ namespace Nurture.MCP.Editor
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly ServiceProvider _services;
 
-        private readonly ConcurrentDictionary<string, HttpMcpSession<StreamableHttpServerTransport>> _sessions =
-            new(StringComparer.Ordinal);
+        private readonly ConcurrentDictionary<
+            string,
+            HttpMcpSession<StreamableHttpServerTransport>
+        > _sessions = new(StringComparer.Ordinal);
 
         public HttpServer(string prefix, McpServerOptions options, ServiceProvider services)
         {
@@ -199,7 +199,9 @@ namespace Nurture.MCP.Editor
             }
             else
             {
-                throw new NotSupportedException($"HTTP method {context.Request.HttpMethod} is not supported");
+                throw new NotSupportedException(
+                    $"HTTP method {context.Request.HttpMethod} is not supported"
+                );
             }
         }
 
@@ -212,11 +214,17 @@ namespace Nurture.MCP.Editor
             string acceptHeaderRaw = context.Request.Headers["Accept"];
             // Parse accept headers
             string[] acceptHeaders = acceptHeaderRaw.Split(',');
-            if (!acceptHeaders.Any(s => s.Trim() == s_applicationJsonMediaType || s.Trim() == s_textEventStreamMediaType))
+            if (
+                !acceptHeaders.Any(s =>
+                    s.Trim() == s_applicationJsonMediaType || s.Trim() == s_textEventStreamMediaType
+                )
+            )
             {
-                await WriteJsonRpcErrorAsync(context,
+                await WriteJsonRpcErrorAsync(
+                    context,
                     "Not Acceptable: Client must accept both application/json and text/event-stream",
-                    406);
+                    406
+                );
                 return;
             }
 
@@ -227,7 +235,10 @@ namespace Nurture.MCP.Editor
             }
 
             InitializeSseResponse(context);
-            var wroteResponse = await session.Transport.HandlePostRequest(new HttpDuplexPipe(context), session.SessionClosed);
+            var wroteResponse = await session.Transport.HandlePostRequest(
+                new HttpDuplexPipe(context),
+                session.SessionClosed
+            );
             if (!wroteResponse)
             {
                 // We wound up writing nothing, so there should be no Content-Type response header.
@@ -251,7 +262,10 @@ namespace Nurture.MCP.Editor
             // will be sent in response to a different POST request. It might be a while before we send a message
             // over this response body.
             await context.Response.OutputStream.FlushAsync(session.SessionClosed);
-            await session.Transport.HandleGetRequest(context.Response.OutputStream, session.SessionClosed);
+            await session.Transport.HandleGetRequest(
+                context.Response.OutputStream,
+                session.SessionClosed
+            );
         }
 
         public async Task HandleDeleteRequestAsync(HttpListenerContext context)
@@ -263,7 +277,10 @@ namespace Nurture.MCP.Editor
             }
         }
 
-        private async ValueTask<HttpMcpSession<StreamableHttpServerTransport>?> GetSessionAsync(HttpListenerContext context, string sessionId)
+        private async ValueTask<HttpMcpSession<StreamableHttpServerTransport>?> GetSessionAsync(
+            HttpListenerContext context,
+            string sessionId
+        )
         {
             HttpMcpSession<StreamableHttpServerTransport>? session;
 
@@ -281,7 +298,9 @@ namespace Nurture.MCP.Editor
             return session;
         }
 
-        private async ValueTask<HttpMcpSession<StreamableHttpServerTransport>?> GetOrCreateSessionAsync(HttpListenerContext context)
+        private async ValueTask<HttpMcpSession<StreamableHttpServerTransport>?> GetOrCreateSessionAsync(
+            HttpListenerContext context
+        )
         {
             string sessionId = context.Request.Headers["mcp-session-id"];
 
@@ -295,7 +314,9 @@ namespace Nurture.MCP.Editor
             }
         }
 
-        private async ValueTask<HttpMcpSession<StreamableHttpServerTransport>> StartNewSessionAsync(HttpListenerContext context)
+        private async ValueTask<HttpMcpSession<StreamableHttpServerTransport>> StartNewSessionAsync(
+            HttpListenerContext context
+        )
         {
             string sessionId;
             StreamableHttpServerTransport transport;
@@ -308,7 +329,9 @@ namespace Nurture.MCP.Editor
 
             if (!_sessions.TryAdd(sessionId, session))
             {
-                throw new Exception($"Unreachable given good entropy! Session with ID '{sessionId}' has already been created.");
+                throw new Exception(
+                    $"Unreachable given good entropy! Session with ID '{sessionId}' has already been created."
+                );
             }
 
             return session;
@@ -317,12 +340,18 @@ namespace Nurture.MCP.Editor
         private async ValueTask<HttpMcpSession<StreamableHttpServerTransport>> CreateSessionAsync(
             HttpListenerContext context,
             StreamableHttpServerTransport transport,
-            string sessionId)
+            string sessionId
+        )
         {
             var mcpServerServices = _services;
             var mcpServerOptions = _options;
 
-            var server = McpServerFactory.Create(transport, mcpServerOptions, _loggerFactory, mcpServerServices);
+            var server = McpServerFactory.Create(
+                transport,
+                mcpServerOptions,
+                _loggerFactory,
+                mcpServerServices
+            );
 
             var session = new HttpMcpSession<StreamableHttpServerTransport>(sessionId, transport)
             {
@@ -334,15 +363,16 @@ namespace Nurture.MCP.Editor
             return session;
         }
 
-        private static ValueTask WriteJsonRpcErrorAsync(HttpListenerContext context, string errorMessage, int statusCode, int errorCode = -32000)
+        private static ValueTask WriteJsonRpcErrorAsync(
+            HttpListenerContext context,
+            string errorMessage,
+            int statusCode,
+            int errorCode = -32000
+        )
         {
             var jsonRpcError = new JsonRpcError
             {
-                Error = new()
-                {
-                    Code = errorCode,
-                    Message = errorMessage,
-                },
+                Error = new() { Code = errorCode, Message = errorMessage },
             };
 
             var json = JsonSerializer.Serialize(jsonRpcError, s_errorTypeInfo);

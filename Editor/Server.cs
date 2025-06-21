@@ -58,7 +58,7 @@ namespace Nurture.MCP.Editor
             var toolOptions = new McpServerToolCreateOptions()
             {
                 Services = services,
-                
+
                 SchemaCreateOptions = new()
                 {
                     TransformSchemaNode = (context, node) =>
@@ -76,7 +76,6 @@ namespace Nurture.MCP.Editor
                         return node;
                     },
                 },
-                
             };
 
             CollectTools(options, toolOptions);

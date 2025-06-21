@@ -368,11 +368,7 @@ namespace Nurture.MCP.Editor.Services
                     foreach (var screenshot in screenshots)
                     {
                         results.Add(
-                            new ImageContentBlock()
-                            {
-                                Data = screenshot,
-                                MimeType = "image/png",
-                            }
+                            new ImageContentBlock() { Data = screenshot, MimeType = "image/png" }
                         );
                     }
 
