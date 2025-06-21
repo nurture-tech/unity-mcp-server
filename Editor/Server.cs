@@ -18,6 +18,7 @@ namespace Nurture.MCP.Editor
     {
         private static CancellationTokenSource _cancellationTokenSource;
         private static McpServerOptions _options;
+        private static IServiceProvider _services;
 
         static Server()
         {
@@ -46,6 +47,8 @@ namespace Nurture.MCP.Editor
         private static void Start()
         {
             Debug.Log("[MCP] Starting server");
+            
+            Debug.unityLogger.logHandler = new UnityMcpLogHandler();
 
             _options = new()
             {
@@ -56,11 +59,11 @@ namespace Nurture.MCP.Editor
                     Do not use generic codebase search or file search tools on any files in the `Assets` folder other than for *.cs files.",
             };
 
-            var services = new ServiceCollection()
+            _services = new ServiceCollection()
                 .AddSingleton(SynchronizationContext.Current)
                 .BuildServiceProvider();
 
-            var toolOptions = new McpServerToolCreateOptions() { Services = services };
+            var toolOptions = new McpServerToolCreateOptions() { Services = _services };
 
             CollectTools(_options, toolOptions);
             CollectPrompts(_options);
@@ -73,12 +76,12 @@ namespace Nurture.MCP.Editor
         private static async Task RunServer()
         {
             using var loggerFactory = new UnityLoggerFactory();
-            Debug.Log("[MCP] Server started");
             await using var stdioTransport = new StdioServerTransport(_options, loggerFactory);
             await using IMcpServer server = McpServerFactory.Create(
                 stdioTransport,
                 _options,
-                loggerFactory
+                loggerFactory,
+                _services
             );
             await server.RunAsync(_cancellationTokenSource.Token);
         }

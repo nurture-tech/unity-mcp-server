@@ -2,10 +2,11 @@
 using Microsoft.Extensions.Logging;
 using UnityEngine;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
+using Object = UnityEngine.Object;
 
 namespace Nurture.MCP.Editor
 {
-    public class UnityMcpLogger : ILogger
+    class UnityMcpLogger : ILogger
     {
         private readonly string _categoryName;
 
@@ -37,13 +38,6 @@ namespace Nurture.MCP.Editor
         }
     }
 
-    public class UnityMcpLoggerProvider : ILoggerProvider
-    {
-        public ILogger CreateLogger(string categoryName) => new UnityMcpLogger();
-
-        public void Dispose() { }
-    }
-
     class UnityLoggerFactory : ILoggerFactory
     {
         public void Dispose() { }
@@ -56,6 +50,31 @@ namespace Nurture.MCP.Editor
         public void AddProvider(ILoggerProvider provider)
         {
             throw new System.NotImplementedException();
+        }
+    }
+
+    class UnityMcpLogHandler : ILogHandler
+    {
+        private static ILogHandler _defaultLogger;
+        
+        public UnityMcpLogHandler()
+        {
+            _defaultLogger = Debug.unityLogger.logHandler;
+        }
+        
+        public void LogFormat(LogType logType, Object context, string format, params object[] args)
+        {
+            if (!format.StartsWith("{"))
+            {
+                return;
+            }
+            
+            _defaultLogger.LogFormat(logType, context, format, args);;
+        }
+
+        public void LogException(Exception exception, Object context)
+        {
+            return;
         }
     }
 }
