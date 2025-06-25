@@ -122,9 +122,7 @@ namespace Nurture.MCP.Editor.Services
             Title = "Unity Execute Code",
             Name = "execute_code"
         )]
-        [Description(
-            "Execute code inside the Unity editor"
-        )]
+        [Description("Execute code inside the Unity editor")]
         public static Task<UnityLoggerExtensions.WithLogResult<string>> ExecuteCode(
             SynchronizationContext context,
             [Description(

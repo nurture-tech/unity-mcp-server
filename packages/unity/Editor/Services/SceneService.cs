@@ -390,13 +390,7 @@ namespace Nurture.MCP.Editor.Services
                         msg += $"\n\nScreenshots are attached.";
                     }
 
-                    var results = new List<ContentBlock>
-                    {
-                        new TextContentBlock()
-                        {
-                            Text = msg,
-                        },
-                    };
+                    var results = new List<ContentBlock> { new TextContentBlock() { Text = msg } };
 
                     foreach (var screenshot in screenshots)
                     {

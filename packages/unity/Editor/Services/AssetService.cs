@@ -250,7 +250,7 @@ namespace Nurture.MCP.Editor.Services
                                 Channels = asset.channels,
                                 Length = asset.length,
                             }
-                        )
+                        ),
                     },
                     /*
                     new()
@@ -337,15 +337,8 @@ namespace Nurture.MCP.Editor.Services
                 return Task.FromResult(
                     new List<ContentBlock>()
                     {
-                        new TextContentBlock()
-                        {
-                            Text = JsonSerializer.Serialize(textureInfo),
-                        },
-                        new ImageContentBlock()
-                        {
-                            Data = base64,
-                            MimeType = "image/png",
-                        },
+                        new TextContentBlock() { Text = JsonSerializer.Serialize(textureInfo) },
+                        new ImageContentBlock() { Data = base64, MimeType = "image/png" },
                     }
                 );
             }
@@ -354,10 +347,7 @@ namespace Nurture.MCP.Editor.Services
                 return Task.FromResult(
                     new List<ContentBlock>()
                     {
-                        new TextContentBlock()
-                        {
-                            Text = JsonSerializer.Serialize(textureInfo),
-                        },
+                        new TextContentBlock() { Text = JsonSerializer.Serialize(textureInfo) },
                     }
                 );
             }
@@ -404,26 +394,13 @@ namespace Nurture.MCP.Editor.Services
                 string base64 = preview.GetPngBase64();
                 return new List<ContentBlock>()
                 {
-                    new TextContentBlock()
-                    {
-                        Text = data,
-                    },
-                    new ImageContentBlock()
-                    {
-                        Data = base64,
-                        MimeType = "image/png",
-                    },
+                    new TextContentBlock() { Text = data },
+                    new ImageContentBlock() { Data = base64, MimeType = "image/png" },
                 };
             }
             else
             {
-                return new List<ContentBlock>()
-                {
-                    new TextContentBlock()
-                    {
-                        Text = data
-                    },
-                };
+                return new List<ContentBlock>() { new TextContentBlock() { Text = data } };
             }
         }
 
