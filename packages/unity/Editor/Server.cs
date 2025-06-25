@@ -56,8 +56,21 @@ namespace Nurture.MCP.Editor
                 ServerInfo = new() { Name = "Nurture Unity MCP", Version = "1.0.0" },
                 Capabilities = new(),
                 ServerInstructions =
-                    @"When copying a file inside of `Assets` folder, use the `Unity_CopyAsset` tool instead of generic file tools. 
-                    Do not use generic codebase search or file search tools on any files in the `Assets` folder other than for *.cs files.",
+                    @"- When copying a file inside of `Assets` folder, use the `Unity_CopyAsset` tool instead of generic file tools. 
+
+                    - Do not use generic codebase search or file search tools on any files in the `Assets` folder other than for *.cs files.
+
+                    - Do not use generic file tools (edit_file, apply, copy, move, etc) when working with anything in the `Assets` folder.
+
+                    - When editing an existing scene or prefab, open it first.
+
+                    - After creating or changing objects in a scene or prefab, focus on the objects that were created or changed.
+
+                    - After making a change to a scene or prefab that you want to keep, save it.
+
+                    - After editing a prefab, exit isolation mode before continuing to work on the scene.
+             
+                    - Take a screenshot after every change you make to a loaded Unity scene or prefab that affects visuals."
             };
 
             _services = new ServiceCollection()
