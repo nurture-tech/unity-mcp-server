@@ -122,7 +122,13 @@ namespace Nurture.MCP.Editor.Services
             Title = "Unity Execute Code",
             Name = "execute_code"
         )]
-        [Description("Execute code inside the Unity editor")]
+        [Description(@"Execute code inside the Unity editor. Instructions:                    
+
+                    - Call the appropriate `Undo` class methods to allow undoing any modifications.
+
+                    - Use `PhysicsMasterial` instead of `PhysicMaterial`.
+
+                    - When creating a prefab, use `PrefabUtility.SaveAsPrefabAssetAndConnect` instead of `PrefabUtility.SaveAsPrefab` so that the gameobject in the current scene/prefab is connected to the new prefab.")]
         public static Task<UnityLoggerExtensions.WithLogResult<string>> ExecuteCode(
             SynchronizationContext context,
             [Description(
