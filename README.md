@@ -17,7 +17,7 @@
 {
   "mcpServers": {
     "unity": {
-      "command": "`npx -y @nurture-tech/unity-mcp-runner`",
+      "command": "npx -y @nurture-tech/unity-mcp-runner",
       "args": [
         "-unityPath",
         "<path to unity editor>,
