@@ -66,8 +66,7 @@ namespace Nurture.MCP.Editor.Services
         [Description(
             @"Create or replace a C# code file at the given path. 
             This also checks to make sure the script compiles. 
-            Use this tool instead of generic file creation tools when working with Unity C# code.
-            After running this tool, don't run additional tools. Ask the user to tell you when the script is done compiling."
+            Use this tool instead of generic file creation tools when working with Unity C# code."
         )]
         internal static Task<ScriptInfo> CreateScript(
             SynchronizationContext context,
@@ -124,7 +123,7 @@ namespace Nurture.MCP.Editor.Services
             Name = "execute_code"
         )]
         [Description(
-            "Execute code inside the Unity editor. Do not include any `using` statements."
+            "Execute code inside the Unity editor"
         )]
         public static Task<UnityLoggerExtensions.WithLogResult<string>> ExecuteCode(
             SynchronizationContext context,
