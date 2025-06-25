@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "build": "tsc"
   },
   "author": {
     "name": "Nurture",
