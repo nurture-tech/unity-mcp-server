@@ -1,0 +1,15 @@
+{
+  "name": "@nurture-tech/nurture-mcp",
+  "version": "1.0.0",
+  "description": "A set of Model Context Protocol server components for Unity",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "private": true,
+  "workspaces": [
+    "packages/node-runner"
+  ],
+  "devDependencies": {
+    "husky": "^8.0.0"
+  }
+}
