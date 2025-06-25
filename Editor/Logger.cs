@@ -44,12 +44,12 @@ namespace Nurture.MCP.Editor
     class UnityLoggerFactory : ILoggerFactory
     {
         private LogLevel[] _levels;
-        
+
         public UnityLoggerFactory(LogLevel[] levels)
         {
             _levels = levels;
         }
-        
+
         public void Dispose() { }
 
         public ILogger CreateLogger(string categoryName)
@@ -66,20 +66,21 @@ namespace Nurture.MCP.Editor
     class UnityMcpLogHandler : ILogHandler
     {
         private static ILogHandler _defaultLogger;
-        
+
         public UnityMcpLogHandler()
         {
             _defaultLogger = Debug.unityLogger.logHandler;
         }
-        
+
         public void LogFormat(LogType logType, Object context, string format, params object[] args)
         {
             if (!format.StartsWith("{"))
             {
                 return;
             }
-            
-            _defaultLogger.LogFormat(logType, context, format, args);;
+
+            _defaultLogger.LogFormat(logType, context, format, args);
+            ;
         }
 
         public void LogException(Exception exception, Object context)

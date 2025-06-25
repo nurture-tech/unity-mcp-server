@@ -48,7 +48,7 @@ namespace Nurture.MCP.Editor
         private static void Start()
         {
             Debug.Log("[MCP] Starting server");
-            
+
             Debug.unityLogger.logHandler = new UnityMcpLogHandler();
 
             _options = new()
@@ -76,7 +76,9 @@ namespace Nurture.MCP.Editor
 
         private static async Task RunServer()
         {
-            using var loggerFactory = new UnityLoggerFactory(new LogLevel[] { LogLevel.Error, LogLevel.Critical, LogLevel.Warning });
+            using var loggerFactory = new UnityLoggerFactory(
+                new LogLevel[] { LogLevel.Error, LogLevel.Critical, LogLevel.Warning }
+            );
             await using var stdioTransport = new StdioServerTransport(_options, loggerFactory);
             await using IMcpServer server = McpServerFactory.Create(
                 stdioTransport,
