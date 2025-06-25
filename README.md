@@ -8,7 +8,7 @@
 
 1. Open the Unity Package Manager window.
 2. Choose **+** -> **Install package from Git URL**,
-3. Enter `https://github.com/nurture-tech/unity-mcp-playground.git#main`.
+3. Enter `https://github.com/nurture-tech/unity-mcp.git?path=packages/unity#main`.
 4. Click **Install**.
 
 ### Configure `mcp.json`
@@ -17,13 +17,10 @@
 {
   "mcpServers": {
     "unity": {
-      "command": "C:/path/to/Unity.exe",
+      "command": "`npx -y @nurture-tech/unity-mcp`",
       "args": [
         "-projectPath", 
-        ".",
-        "-mcp",
-        "-logFile",
-        "-"
+        "."
       ]
     }
   }
