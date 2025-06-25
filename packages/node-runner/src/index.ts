@@ -22,9 +22,11 @@ const editorPath =
     .find((line) => line.includes(projectVersion))
     ?.split(" , installed at ")[1] || "";
 
-const proc = exec(`${editorPath} ${process.argv.slice(1).join(" ")}`);
+const proc = exec(`${editorPath} ${process.argv.slice(1).join(" ")} -mcp -logFile -`);
 
 await new Promise((resolve) => {
+  process.stdin.pipe(proc.stdin!);
+  proc.stdout?.pipe(process.stdout);
   proc.on("exit", (code) => {
     resolve(code);
   });
