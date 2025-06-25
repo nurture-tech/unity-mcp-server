@@ -10,7 +10,7 @@ const unityPath = args.unityPath;
 
 const proc = spawn(unityPath, [...process.argv.slice(1), "-mcp", "-logFile", "-"]);
 
-const code = await new Promise<number | null>((resolve) => {
+const code = await new Promise<number | null>((resolve, reject) => {
   process.stdin.pipe(proc.stdin!);
   proc.stdout?.on("data", (data) => {
     const lines = data.toString().split("\n");
@@ -22,6 +22,9 @@ const code = await new Promise<number | null>((resolve) => {
   });
   proc.on("exit", (code) => {
     resolve(code);
+  });
+  proc.on("error", (err) => {
+    reject(err.message);
   });
 });
 
