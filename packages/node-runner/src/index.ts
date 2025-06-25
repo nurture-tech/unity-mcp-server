@@ -1,6 +1,6 @@
 ﻿import { readFileSync } from "node:fs";
 import { execSync, exec } from "node:child_process";
-import { platform } from "node:process";
+import { platform, exit } from "node:process";
 import { ArgumentParser } from "argparse";
 
 const parser = new ArgumentParser();
@@ -24,10 +24,19 @@ const editorPath =
 
 const proc = exec(`${editorPath} ${process.argv.slice(1).join(" ")} -mcp -logFile -`);
 
-await new Promise((resolve) => {
+const code = await new Promise<number | null>((resolve) => {
   process.stdin.pipe(proc.stdin!);
-  proc.stdout?.pipe(process.stdout);
+  proc.stdout?.on("data", (data) => {
+    const lines = data.toString().split("\n");
+    for (const line of lines) {
+      if (line.startsWith("{")) {
+        process.stdout.write(line + "\n");
+      }
+    }
+  });
   proc.on("exit", (code) => {
     resolve(code);
   });
 });
+
+exit(code ?? 0);
