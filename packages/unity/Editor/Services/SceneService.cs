@@ -349,7 +349,7 @@ namespace Nurture.MCP.Editor.Services
                                     Message = $"Running for {secondsToRun} seconds...",
                                     Progress =
                                         0.5f
-                                        + (0.4f * ((expires - Time.time) / (float)secondsToRun)),
+                                        + (0.4f * ((Time.time - (expires - secondsToRun)) / (float)secondsToRun)),
                                     Total = 1.0f,
                                 }
                             );
