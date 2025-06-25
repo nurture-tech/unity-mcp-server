@@ -12,7 +12,6 @@ using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -391,9 +390,9 @@ namespace Nurture.MCP.Editor.Services
                         msg += $"\n\nScreenshots are attached.";
                     }
 
-                    var results = new List<TextContentBlock>
+                    var results = new List<ContentBlock>
                     {
-                        new()
+                        new TextContentBlock()
                         {
                             Text = msg,
                         },

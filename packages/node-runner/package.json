@@ -1,6 +1,6 @@
 {
   "name": "@nurture-tech/unity-mcp-runner",
-  "version": "1.0.0",
+  "version": "0.2.2",
   "main": "dist/index.js",
   "bin": {
     "unity-mcp-runner": "dist/index.js"

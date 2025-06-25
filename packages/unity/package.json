@@ -1,7 +1,7 @@
 {
     "name": "is.nurture.mcp",
     "displayName": "Nurture Unity MCP Server",
-    "version": "1.0.0",
+    "version": "0.2.2",
     "unity": "2022.3",
     "description": "A set of Model Context Protocol server components for Unity.",
     "keywords": [

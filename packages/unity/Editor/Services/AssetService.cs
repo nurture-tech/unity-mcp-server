@@ -294,7 +294,7 @@ namespace Nurture.MCP.Editor.Services
                     await Task.Delay(100);
                     if (cancellationToken.IsCancellationRequested)
                     {
-                        return new List<Content>();
+                        return new List<ContentBlock>();
                     }
                 }
 
@@ -363,7 +363,7 @@ namespace Nurture.MCP.Editor.Services
             }
         }
 
-        private static async Task<List<Content>> FormatMesh(
+        private static async Task<List<ContentBlock>> FormatMesh(
             Mesh asset,
             IProgress<ProgressNotificationValue> progress,
             CancellationToken cancellationToken,
@@ -397,7 +397,7 @@ namespace Nurture.MCP.Editor.Services
                     await Task.Delay(100);
                     if (cancellationToken.IsCancellationRequested)
                     {
-                        return new List<Content>();
+                        return new List<ContentBlock>();
                     }
                 }
 
@@ -417,13 +417,11 @@ namespace Nurture.MCP.Editor.Services
             }
             else
             {
-                return new List<Content>()
+                return new List<ContentBlock>()
                 {
-                    new()
+                    new TextContentBlock()
                     {
-                        Type = "text",
-                        Text = data,
-                        MimeType = "application/json",
+                        Text = data
                     },
                 };
             }
