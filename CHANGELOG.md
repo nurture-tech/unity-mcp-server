@@ -21,11 +21,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - When retrieving the hierarchy path for a gameobject in prefab isolation mode, treat "/" as the root gameobject instead of "/GameObjectName".
 
+- *BREAKING* switched to stdio transport.
+
+- Updated to C# MCP SDK v0.3.0-preview-1
+
 ### Fixed
 
 - Only return one level of game objects in the results for `open_prefab`.
 
 - Compound search filters now work properly with `h:` and `p:` filters. These do not support grouping so they are now controlled by an additional parameter to the `search` tool.
+
+- Connection to MCP client no longer breaks when compiling scripts due to new stdio transport.
+
+- Removed erroneous instruction in `create_script`.
+
 
 ## [0.2.2]   - 2025-06-03
 
