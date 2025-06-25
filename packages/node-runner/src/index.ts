@@ -1,4 +1,6 @@
-﻿import { readFileSync } from "node:fs";
+﻿#!/usr/bin/env node
+
+import { readFileSync } from "node:fs";
 import { execSync, exec } from "node:child_process";
 import { platform, exit } from "node:process";
 import { ArgumentParser } from "argparse";
