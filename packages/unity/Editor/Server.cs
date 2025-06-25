@@ -53,7 +53,7 @@ namespace Nurture.MCP.Editor
 
             _options = new()
             {
-                ServerInfo = new() { Name = "Nurture Unity MCP", Version = "1.0.0" },
+                ServerInfo = new() { Name = "Nurture Unity MCP", Version = "0.2.2" },
                 Capabilities = new(),
                 ServerInstructions =
                     @"- When copying a file inside of `Assets` folder, use the `Unity_CopyAsset` tool instead of generic file tools. 
