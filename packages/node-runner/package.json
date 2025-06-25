@@ -31,5 +31,9 @@
     "*.{json,js,ts,jsx,tsx,html}": [
       "prettier --write --ignore-unknown"
     ]
+  },
+  "dependencies": {
+    "@types/argparse": "^2.0.17",
+    "argparse": "^2.0.1"
   }
 }
