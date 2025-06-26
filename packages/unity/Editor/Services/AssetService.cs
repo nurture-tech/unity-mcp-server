@@ -196,6 +196,12 @@ namespace Nurture.MCP.Editor.Services
                     long fileIDLong = long.Parse(fileID);
                     string path = AssetDatabase.GUIDToAssetPath(guid);
 
+                    switch (Path.GetExtension(path).ToLower())
+                    {
+                        case ".shadergraph":
+                            return FormatShaderGraph(path);
+                    }
+
                     var assets = AssetDatabase.LoadAllAssetsAtPath(path);
 
                     var asset =
@@ -227,6 +233,18 @@ namespace Nurture.MCP.Editor.Services
                     };
                 },
                 cancellationToken
+            );
+        }
+
+        private static Task<List<ContentBlock>> FormatShaderGraph(string path)
+        {
+            var text = File.ReadAllText(path);
+
+            return Task.FromResult(
+                new List<ContentBlock>()
+                {
+                    new TextContentBlock() { Text = text },
+                }
             );
         }
 
