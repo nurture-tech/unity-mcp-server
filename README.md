@@ -32,6 +32,7 @@ This will automatically install the `is.nurture.mcp` package in your unity proje
 
 ## Usage Tips
 
+- Do not launch the Unity project manually from the Unity hub when working with this MCP. This will cause the MCP client to fail to connect.
 
 - Install the MCP server in per-project settings if your agent supports this. That way you can switch between different codebases and it will launch the corresponding unity project.
 
