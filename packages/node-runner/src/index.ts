@@ -26,7 +26,7 @@ if (process.env.NODE_ENV !== "development" && packageData?.packageJson.version) 
 // Use `https://github.com/nurture-tech/unity-mcp.git?path=packages/unity#v[VERSION]`.
 // TODO: Use published package version
 
-const packageJsonPath = path.join(args.projectPath, "Packages", "package.json");
+const packageJsonPath = path.join(args.projectPath, "Packages", "manifest.json");
 const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf8"));
 packageJson.dependencies["is.nurture.mcp"] = `https://github.com/nurture-tech/unity-mcp.git?path=packages/unity#${tag}`;
 await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
