@@ -13,7 +13,7 @@
       "command": "npx -y @nurture-tech/unity-mcp-runner",
       "args": [
         "-unityPath",
-        "<path to unity editor>,
+        "<path to unity editor>",
         "-projectPath", 
         "<path to unity project>"
       ]
