@@ -1,10 +1,36 @@
 # Nurture Unity MCP Server
 
-> A set of Model Context Protocol server components for Unity
+> A Model Context Protocol server for Unity
+
+## Compatibility
+
+| Name | Compatible | Notes |
+|------|------------|-------|
+| **Models** |  |  |
+| GPT-4.1 | ✅ | |
+| Claude 4 Sonnet | ✅ |  |
+| Claude 4 Opus | ✅  |  |
+| Gemini 2.5 Pro | ✅  |  |
+| Gemini 2.5 Flash | ✅  |  |
+| o3 | ?  |  |
+| **Unity Versions** |  |  |
+| Unity 6000.0.x | ✅ | Higher versions should be fine. Lower versions may work but untested. |
+| **Agents** |  |  |
+| Cursor | ✅ |  |
+| Rider AI | ✅ |  |
+| Claude Desktop | ✅ |  |
+| Claude Code | ❌ | Hangs on tool calls |
+| **Operating Systems** |  |  |
+| Windows | ✅ |  |
+| Mac | ✅ |  |
+| Ubuntu | ❔ | Untested |
+
 
 ## Setup
 
-### Configure `mcp.json`
+### 1. Install node.js
+
+### 2. Configure `mcp.json`
 
 ```
 {
@@ -30,7 +56,7 @@ The first startup of the MCP will take a while because it has to install the pac
 
 ## Known Issues
 
-- The Google External Dependency Manager (EDMU) causes Unity to hang forever on startup when launched via Cursor. This is under investigation.
+- The Google External Dependency Manager (EDMU) causes Unity to hang forever on startup when launched via Cursor on  Windows. This is under investigation.
 
 ## Usage Tips
 

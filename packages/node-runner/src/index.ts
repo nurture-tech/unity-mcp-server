@@ -32,6 +32,8 @@ if (!devMode && packageData?.packageJson.version) {
   tag = `v${packageData.packageJson.version}`;
 }
 
+await log?.write(`Tag: ${tag}\n`);
+
 // Load Packages/package.json and add the is.nurture.mcp package to the project.
 // Use `https://github.com/nurture-tech/unity-mcp.git?path=packages/unity#v[VERSION]`.
 // TODO: Use published package version

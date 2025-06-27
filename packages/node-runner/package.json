@@ -1,10 +1,15 @@
 {
   "name": "@nurture-tech/unity-mcp-runner",
+  "description": "A Model Context Protocol server for Unity intended for commercial-level work",
   "version": "0.2.2",
   "main": "dist/index.js",
   "bin": {
     "unity-mcp-runner": "dist/index.js"
   },
+  "keywords": [
+    "mcp",
+    "unity"
+  ],
   "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",
@@ -16,6 +21,7 @@
     "name": "Nurture",
     "url": "https://nurture.is"
   },
+  "repository": "github:nurture-tech/unity-mcp",
   "private": true,
   "devDependencies": {
     "@eslint/js": "^9.29.0",
