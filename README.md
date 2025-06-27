@@ -12,7 +12,8 @@
 | Claude 4 Opus | ✅  |  |
 | Gemini 2.5 Pro | ✅  |  |
 | Gemini 2.5 Flash | ✅  |  |
-| o3 | ?  |  |
+| o3 | ✅  | No image understanding |
+| o4-mini | ✅ | |
 | **Unity Versions** |  |  |
 | Unity 6000.0.x | ✅ | Higher versions should be fine. Lower versions may work but untested. |
 | **Agents** |  |  |
