@@ -1,6 +1,6 @@
 ﻿import { spawn } from "node:child_process";
 import { exit } from "node:process";
-import { ArgumentParser } from "argparse";
+import { ArgumentParser, BooleanOptionalAction } from "argparse";
 import { readPackageUp } from "read-package-up";
 import path from "node:path";
 import fs from "node:fs/promises";
@@ -8,9 +8,10 @@ import fs from "node:fs/promises";
 const parser = new ArgumentParser();
 parser.add_argument("-unityPath", { type: String, required: true });
 parser.add_argument("-projectPath", { type: String, required: true });
-parser.add_argument("", { nargs: "*" });
+parser.add_argument("-dev", { type: Boolean, action: BooleanOptionalAction, required: false });
 const args = parser.parse_args();
 const unityPath = args.unityPath;
+const devMode = args.dev;
 
 // Load the package.json for the current package we are running in and retrieve the version.
 
@@ -18,7 +19,7 @@ const packageData = await readPackageUp();
 
 let tag = "main";
 
-if (process.env.NODE_ENV !== "development" && packageData?.packageJson.version) {
+if (!devMode && packageData?.packageJson.version) {
   tag = `v${packageData.packageJson.version}`;
 }
 
@@ -33,22 +34,38 @@ await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
 const proc = spawn(unityPath, [...process.argv.slice(1), "-mcp", "-logFile", "-"]);
 
-const code = await new Promise<number | null>((resolve, reject) => {
-  process.stdin.pipe(proc.stdin!);
-  proc.stdout?.on("data", (data) => {
-    const lines = data.toString().split("\n");
-    for (const line of lines) {
-      if (line.startsWith("{")) {
-        process.stdout.write(line + "\n");
-      }
-    }
-  });
-  proc.on("exit", (code) => {
-    resolve(code);
-  });
-  proc.on("error", (err) => {
-    reject(err.message);
-  });
-});
+let log: fs.FileHandle | undefined = undefined;
 
-exit(code ?? 0);
+if (devMode) {
+  log = await fs.open(path.join(args.projectPath, "mcp.log"), "w");
+}
+
+try {
+  const code = await new Promise<number | null>((resolve, reject) => {
+    process.stdin.pipe(proc.stdin!);
+    process.stdin.on("data", async (data) => {
+      await log?.write(data.toString());
+      proc.stdin?.write(data);
+    });
+    proc.stdout?.on("data", async (data) => {
+      const lines = data.toString().split("\n");
+
+      for (const line of lines) {
+        if (line.startsWith("{")) {
+          process.stdout.write(line + "\n");
+          await log?.write(line + "\n");
+        }
+      }
+    });
+    proc.on("exit", (code) => {
+      resolve(code);
+    });
+    proc.on("error", (err) => {
+      reject(err.message);
+    });
+  });
+
+  exit(code ?? 0);
+} finally {
+  log?.close();
+}
