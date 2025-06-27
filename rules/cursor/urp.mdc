@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- Use Universal Render Pipeline shaders instead of Standard shaders for new 3-D meshes.

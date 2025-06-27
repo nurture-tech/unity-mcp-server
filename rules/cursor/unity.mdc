@@ -21,10 +21,4 @@ alwaysApply: true
 
 - Use `PhysicsMasterial` instead of `PhysicMaterial`.
 
-- Use the new InputSystem (UnityEngine.InputSystem) for any user input outside of UI.
-
-- When searching for Unity assets by keyword or meaning, use the `unity-rag_search_assets` tool instead of `unity_search` tool.
-
 - When creating a prefab, use `PrefabUtility.SaveAsPrefabAssetAndConnect` instead of `PrefabUtility.SaveAsPrefab` so that the gameobject in the current scene/prefab is connected to the new prefab.
-
-- Use Universal Render Pipeline shaders instead of Standard shaders for new 3-D meshes.

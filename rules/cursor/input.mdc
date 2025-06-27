@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- Use the new Unity InputSystem (UnityEngine.InputSystem) for any user input outside of UI.
