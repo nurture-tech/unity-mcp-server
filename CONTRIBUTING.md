@@ -72,3 +72,7 @@ If you have an idea for a new feature or an improvement to an existing one, plea
 This project and everyone participating in it is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior. (Note: A `CODE_OF_CONDUCT.md` file will need to be created).
 
 Thank you again for your contribution! 
+
+## Adding New Tools
+
+NUPS operates on the principle of a minimum set of highly flexible tools. `execute_code` can handle just about any mutation to a Unity project. If the context you want to add is small and frequently needed, consider adding it to the `get_state` tool response instead of creating a new tool. If you want to enable a specific workflow, consider contributing a rules file in `rules`.

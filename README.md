@@ -61,7 +61,15 @@ The first startup of the MCP will take a while because it has to install the pac
 
 ## Adding Project-Specific Tools
 
-NUPS 
+NUPS uses the official [C# MCP SDK](https://github.com/modelcontextprotocol/csharp-sdk).
+
+Create a static class to hold your tools. Add the `[McpServerToolType]` annotation to the class.
+
+Declare static methods to implement each tool. Use the `[McpServerTool]` annotation to each method.
+
+Reference the [Services](./packages/unity/Editor/Services) directory for examples.
+
+You will likely need to quit unity and restart your agent in order for it to see the new tools.
 
 ## Usage Tips
 
