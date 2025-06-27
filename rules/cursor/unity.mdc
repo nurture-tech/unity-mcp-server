@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- When editing an existing scene or prefab, open it first.
+
+- After creating a new scene, open it.
+
+- After creating or changing objects in a scene or prefab, focus on the objects that were created or changed.
+
+- After making a change to a scene or prefab that you want to keep, save it.
+
+- After editing a prefab, exit isolation mode before continuing to work on the scene.
+
+- Don't use generic file tools (edit_file, apply, copy, move, etc) when working with anything in the `Assets` folder.
+
+- Call the appropriate `Undo` class methods when running Unity Editor scripts to allow undoing any modifications.
+
+- Take a screenshot after every change you make to a loaded Unity scene or prefab that affects visuals.
+
+- Use `PhysicsMasterial` instead of `PhysicMaterial`.
+
+- Use the new InputSystem (UnityEngine.InputSystem) for any user input outside of UI.
+
+- When searching for Unity assets by keyword or meaning, use the `unity-rag_search_assets` tool instead of `unity_search` tool.
+
+- When creating a prefab, use `PrefabUtility.SaveAsPrefabAssetAndConnect` instead of `PrefabUtility.SaveAsPrefab` so that the gameobject in the current scene/prefab is connected to the new prefab.
+
+- Use Universal Render Pipeline shaders instead of Standard shaders for new 3-D meshes.
