@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - If the `srcPath` and the `dstPath` are the same in `import_asset` we still import it without copying it.
 
+- Automatically install the Unity package.
+
 ### Changed
 
 - Document that opening a prefab will activate isolation mode.
