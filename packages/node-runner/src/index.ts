@@ -4,6 +4,7 @@ import { ArgumentParser, BooleanOptionalAction } from "argparse";
 import { readPackageUp } from "read-package-up";
 import path from "node:path";
 import fs from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 
 const parser = new ArgumentParser();
 parser.add_argument("-unityPath", { type: String, required: true });
@@ -13,9 +14,17 @@ const args = parser.parse_args();
 const unityPath = args.unityPath;
 const devMode = args.dev;
 
-// Load the package.json for the current package we are running in and retrieve the version.
+let log: fs.FileHandle | undefined = undefined;
 
-const packageData = await readPackageUp();
+if (devMode) {
+  log = await fs.open(path.join(args.projectPath, "mcp.log"), "w");
+}
+
+// Load the package.json for the current package we are running in and retrieve the version.
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
+const packageData = await readPackageUp({
+  cwd: currentDir,
+});
 
 let tag = "main";
 
@@ -34,15 +43,10 @@ await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
 const proc = spawn(unityPath, [...process.argv.slice(1), "-mcp", "-logFile", "-"]);
 
-let log: fs.FileHandle | undefined = undefined;
-let buffer = ""; // Buffer to accumulate partial lines
-
-if (devMode) {
-  log = await fs.open(path.join(args.projectPath, "mcp.log"), "w");
-}
-
 try {
   const code = await new Promise<number | null>((resolve, reject) => {
+    let buffer = ""; // Buffer to accumulate partial lines
+
     process.stdin.on("data", async (data) => {
       await log?.write(data.toString());
       proc.stdin?.write(data);
