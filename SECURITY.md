@@ -14,6 +14,6 @@ Covered:
 
 ✅ A tool can be made to act contrary to its [security-relevant annotations](https://modelcontextprotocol.io/docs/concepts/tools#available-tool-annotations).
 
-Not Coevered
+Not Covered:
 
 ❌ `execute_code` tool can be made to run malicious code via prompt injection in the agent conversation.
