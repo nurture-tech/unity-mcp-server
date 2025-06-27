@@ -26,13 +26,16 @@ const packageData = await readPackageUp({
   cwd: currentDir,
 });
 
-let tag = "main";
+let packageUrl;
 
-if (!devMode && packageData?.packageJson.version) {
-  tag = `v${packageData.packageJson.version}`;
+if (devMode) {
+  const unityPackagePath = path.resolve(path.dirname(packageData!.path), "..", "unity");
+  packageUrl = `file:${unityPackagePath}`;
+} else {
+  packageUrl = `https://github.com/nurture-tech/unity-mcp.git?path=packages/unity#v${packageData!.packageJson.version}`;
 }
 
-await log?.write(`Tag: ${tag}\n`);
+await log?.write(`Package URL: ${packageUrl}\n`);
 
 // Load Packages/package.json and add the is.nurture.mcp package to the project.
 // Use `https://github.com/nurture-tech/unity-mcp.git?path=packages/unity#v[VERSION]`.
@@ -40,7 +43,7 @@ await log?.write(`Tag: ${tag}\n`);
 
 const packageJsonPath = path.join(args.projectPath, "Packages", "manifest.json");
 const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf8"));
-packageJson.dependencies["is.nurture.mcp"] = `https://github.com/nurture-tech/unity-mcp.git?path=packages/unity#${tag}`;
+packageJson.dependencies["is.nurture.mcp"] = packageUrl;
 await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
 const proc = spawn(unityPath, [...process.argv.slice(1), "-mcp", "-logFile", "-"]);
