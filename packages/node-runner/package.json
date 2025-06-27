@@ -12,9 +12,9 @@
   ],
   "type": "module",
   "scripts": {
-    "start": "tsx src/index.ts",
     "lint-staged": "lint-staged",
     "build": "tsc",
+    "dev": "tsc -w",
     "prepublishOnly": "npm run build"
   },
   "author": {

@@ -1,4 +1,4 @@
-# Nurture Unity MCP Server
+# Nurture Unity MCP Server (NUPS)
 
 > A Model Context Protocol server for Unity
 
@@ -58,6 +58,10 @@ The first startup of the MCP will take a while because it has to install the pac
 ## Known Issues
 
 - The Google External Dependency Manager (EDMU) causes Unity to hang forever on startup when launched via Cursor on  Windows. This is under investigation.
+
+## Adding Project-Specific Tools
+
+NUPS 
 
 ## Usage Tips
 
