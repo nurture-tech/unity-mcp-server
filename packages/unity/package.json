@@ -3,6 +3,7 @@
     "displayName": "Nurture Unity MCP Server",
     "version": "0.2.2",
     "unity": "2022.3",
+    "license": "MIT",
     "description": "A set of Model Context Protocol server components for Unity.",
     "keywords": [
       "mcp"

@@ -3,6 +3,7 @@
     "version": "0.2.2",
     "description": "A Model Context Protocol server for Unity",
     "repository": "github:nurture-tech/unity-mcp",
+    "license": "MIT",
     "author": {
         "name": "Nurture",
         "url": "https://nurture.is"
