@@ -1,7 +1,8 @@
 {
     "name": "@nurture-tech/unity-mcp",
     "version": "0.2.2",
-    "description": "A set of Model Context Protocol server components for Unity.",
+    "description": "A Model Context Protocol server for Unity",
+    "repository": "github:nurture-tech/unity-mcp",
     "author": {
         "name": "Nurture",
         "url": "https://nurture.is"
