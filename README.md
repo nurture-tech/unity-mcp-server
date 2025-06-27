@@ -77,7 +77,7 @@ You will likely need to quit unity and restart your agent in order for it to see
 
 > Install the MCP server in per-project settings if your agent supports this. That way you can switch between different codebases and it will launch the corresponding unity project.
 
-> You can add additional arguments to the unity command line. Such as running in `-batchmode` or `-nographics` in order to run with background agents or inside of CI/CD pipelines.Use this format:
+> You can add additional arguments to the unity command line — such as running in `-batchmode` or `-nographics` in order to run with background agents or inside of CI/CD pipelines. Use this format:
 
 ```
 {
