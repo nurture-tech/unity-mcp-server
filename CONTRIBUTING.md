@@ -49,6 +49,25 @@ For example: `feat: Add support for custom camera in screenshot tool`
 3. In your pull request description, please explain the changes you made and why.
 4. We will review your pull request as soon as possible. We may suggest some changes or improvements.
 
+### Signing-off on Commits (Developer Certificate of Origin)
+
+To contribute to this project, you must agree to the Developer Certificate of Origin (DCO) for each commit you make. The DCO is a simple statement that you, as a contributor, have the legal right to make the contribution.
+
+See the [DCO](https://developercertificate.org/) file for the full text of what you must agree to and how it works [here](https://github.com/probot/dco#how-it-works). To signify that you agree to the DCO for contributions, you simply add a line to each of your git commit messages:
+
+Signed-off-by: John Doe <john.doe@example.com>
+
+In most cases, you can add this signoff to your commit automatically with the -s or --signoff flag to git commit. You must use your real name and a reachable email address (sorry, no pseudonyms or anonymous contributions). An example of signing off on a commit:
+
+git commit -s -m “my commit message w/signoff”
+
+To ensure all your commits are signed, you may choose to add this alias to your global .gitconfig:
+
+[alias]
+  amend = commit -s --amend
+  cm = commit -s -m
+  commit = commit -s
+
 ## Reporting Bugs
 
 If you find a bug, please open an issue on GitHub. Please include the following information in your bug report:
