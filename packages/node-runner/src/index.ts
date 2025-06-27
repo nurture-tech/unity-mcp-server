@@ -35,6 +35,7 @@ await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 const proc = spawn(unityPath, [...process.argv.slice(1), "-mcp", "-logFile", "-"]);
 
 let log: fs.FileHandle | undefined = undefined;
+let buffer = ""; // Buffer to accumulate partial lines
 
 if (devMode) {
   log = await fs.open(path.join(args.projectPath, "mcp.log"), "w");
@@ -42,14 +43,21 @@ if (devMode) {
 
 try {
   const code = await new Promise<number | null>((resolve, reject) => {
-    process.stdin.pipe(proc.stdin!);
     process.stdin.on("data", async (data) => {
       await log?.write(data.toString());
       proc.stdin?.write(data);
     });
     proc.stdout?.on("data", async (data) => {
-      const lines = data.toString().split("\n");
+      // Add new data to buffer
+      buffer += data.toString();
 
+      // Split buffer into lines
+      const lines = buffer.split("\n");
+
+      // Keep the last line in buffer (it might be incomplete)
+      buffer = lines.pop() || "";
+
+      // Process complete lines
       for (const line of lines) {
         if (line.startsWith("{")) {
           process.stdout.write(line + "\n");
