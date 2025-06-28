@@ -2,7 +2,7 @@
 
 > A Model Context Protocol server for Unity
 
-![NUPS Airship](./docs/assets/airship.png)
+![Doki Delivery Airship](./docs/assets/airship.png)
 
 ## Key Features
 
