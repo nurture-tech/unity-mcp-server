@@ -17,13 +17,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Automatically install the Unity package.
 
+- Community documentation (CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, CODEOWNERS, etc).
+
+- A few seed cursor rules files.
+
 ### Changed
 
 - Document that opening a prefab will activate isolation mode.
 
 - When retrieving the hierarchy path for a gameobject in prefab isolation mode, treat "/" as the root gameobject instead of "/GameObjectName".
 
-- *BREAKING* switched to stdio transport.
+- _BREAKING_ switched to stdio transport.
 
 - Updated to C# MCP SDK v0.3.0-preview-1
 
@@ -37,8 +41,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed erroneous instruction in `create_script`.
 
+- Progress is correctly calculated during `test_active_scene` runs.
 
-## [0.2.2]   - 2025-06-03
+## [0.2.2] - 2025-06-03
 
 ### Added
 
@@ -55,7 +60,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `showThumbnails` parameter is respected when retrieving mesh and texture assets.
 
 - Remove language about when to use the `screenshot` tool to avoid LLMs from erroneously avoiding using it.
-
 
 ## [0.2.1] - 2025-05-19
 
@@ -84,7 +88,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `test_active_scene` actually runs the specified amount of time.
 
 - Fix occasional crashes focusing the window in `test_active_scene`.
-
 
 ## [0.2.0] - 2025-05-16
 
@@ -130,7 +133,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Use `""` as default value for argument to the `search` tool and `screenshot` tool. This avoids some calls erroneously using `"null"` as the value.
 
-
 ## [0.1.2] - 2025-05-06
 
 ### Added
@@ -148,8 +150,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow setting search filters as a string to allow for conditional logic (or and and)
 
 ### Fixed
-
-
 
 - Wait for the user to say when script compilation is complete before proceeding. This helps avoid the issue where a tool is trying to run when the MCP server is restarted during a Domain Reload.
 
@@ -192,8 +192,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `execute_code` module can properly access scripts added to `Assets` in the default assembly.
 
 - The `screenshot` tool will show exactly what is in the scene view.
-
-
 
 ## [0.1.0]
 
