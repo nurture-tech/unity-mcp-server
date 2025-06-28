@@ -2,6 +2,8 @@
 
 > A Model Context Protocol server for Unity
 
+![NUPS Airship](./docs/assets/airship.png)
+
 ## Key Features
 
 - 🖼️ **Multimodal**: Your agent (with supported models) can see the Scene View, look through any camera in the scene, and watch play mode. It can also see thumbnails of your model assets.
