@@ -1,6 +1,6 @@
 {
   "name": "@nurture-tech/unity-mcp",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "A Model Context Protocol server for Unity",
   "repository": "github:nurture-tech/unity-mcp",
   "license": "MIT",
@@ -10,7 +10,7 @@
   },
   "private": true,
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky",
     "lint-staged": "lint-staged",
     "commitlint": "commitlint"
   },
