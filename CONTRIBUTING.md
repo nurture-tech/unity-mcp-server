@@ -42,7 +42,7 @@ When you commit your work, husky will run a pre-commit hook and lint your code.
 
 We use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) style to keep the commit history clean and readable.
 
-For example: `feat(tools): Add support for custom camera in screenshot tool`
+For example: `feat(tools): add support for custom camera in screenshot tool`
 
 ## Submitting Your Changes
 
