@@ -1,6 +1,22 @@
-# Nurture Unity MCP Server (NUPS)
+# Nurture Unity MCP Server (NUPS) 💜
 
 > A Model Context Protocol server for Unity
+
+![Doki Delivery Airship](./docs/assets/airship.png)
+
+## Key Features
+
+- 🖼️ **Multimodal Vision**: Your agent can see what you see. It can view the scene, look through any camera, watch play mode, and inspect asset thumbnails.
+
+- 🔎 **Powerful Search**: Go beyond the project panel with simultaneous search across the hierarchy and project assets.
+
+- ✔️ **Superior Code Analysis**: Leverage Unity's own compiler for code analysis that is more accurate than your agent's linter.
+
+- ⏩ **Quick Start**: Get running in seconds with a single `mcp.json` configuration file.
+
+- 🛠️ **Extensible**: Add your own project-specific tools with minimal boilerplate.
+
+- 📅 **Always Current**: Kept up-to-date with the latest MCP protocol version — currently `2025-06-18` via the [Official MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sdk).
 
 ## Compatibility
 
@@ -48,9 +64,39 @@
 }
 ```
 
-The working directory is different for different agents. So your mileage may vary using relative paths for `-projectPath`. Absolute paths will always work.
-
 This will automatically install the `is.nurture.mcp` package in your unity project. Feel free to commit those changes to source control.
+
+## About the Tools
+
+> Meet your Unity AI toolbox.
+
+| Tool                              | Description                                                                                            |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Assets**                        |                                                                                                        |
+| `Get Asset Contents`              | Get the full contents of an asset or sub-asset.                                                        |
+| `Copy Asset`                      | Copy an asset to a new path.                                                                           |
+| `Import Asset`                    | Import an asset from the filesystem into Unity.                                                        |
+| `Get Asset Importer Settings`     | Get the importer settings for an asset.                                                                |
+| **Prefabs**                       |                                                                                                        |
+| `Open Prefab`                     | Open a Unity prefab in isolation mode so that it can be edited.                                        |
+| **Scenes**                        |                                                                                                        |
+| `Open Scene`                      | Open a scene                                                                                           |
+| `Close Scene`                     | Close an open scene                                                                                    |
+| `Save Scene`                      | Save the current scene. If the scene is not dirty, this will do nothing.                               |
+| `Get GameObject in Active Scenes` | Get the details of a game object in a loaded scene or prefab by its hierarchy path.                    |
+| `Test Active Scene`               | Test the active scene by entering play mode and running for a given number of seconds.                 |
+| **Scripting**                     |                                                                                                        |
+| `Create Script`                   | Create or replace a C# code file at the given path. This also checks to make sure the script compiles. |
+| `Execute Code`                    | Execute code inside the Unity editor.                                                                  |
+| `Get Type Info`                   | Get public fields and methods on a Unity fully qualified type name, including the assembly.            |
+| **Search**                        |                                                                                                        |
+| `Search Objects`                  | Search project assets and scene objects.                                                               |
+| **Editor State**                  |                                                                                                        |
+| `Get State`                       | Get the state of the Unity Editor.                                                                     |
+| `Get Selection`                   | Get the objects the user has currently selected in the editor.                                         |
+| **Vision**                        |                                                                                                        |
+| `Focus on Game Object`            | Focus on a game object in the scene view.                                                              |
+| `Take Scene View Screenshot`      | Retrieve a preview of what is focused in the scene view.                                               |
 
 ## Known Issues
 
@@ -62,41 +108,35 @@ This will automatically install the `is.nurture.mcp` package in your unity proje
 
 NUPS uses the official [C# MCP SDK](https://github.com/modelcontextprotocol/csharp-sdk).
 
-Create a static class to hold your tools. Add the `[McpServerToolType]` annotation to the class.
+1. Create a static class to hold your tools. Add the `[McpServerToolType]` annotation to the class.
 
-Declare static methods to implement each tool. Use the `[McpServerTool]` annotation to each method.
+2. Declare static methods to implement each tool. Add the `[McpServerTool]` annotation to each method.
 
-Reference the [Services](./packages/unity/Editor/Services) directory for examples.
+3. Reference the [Services](./packages/unity/Editor/Services) directory for examples.
 
-You will likely need to quit unity and restart your agent in order for it to see the new tools.
+4. You will likely need to quit unity and restart your agent in order for it to see the new tools.
 
 ## Usage Tips
 
-> Do not launch the Unity project manually from the Unity hub when working with this MCP. This will cause the MCP client to fail to connect.
+Here are some tips to get the most out of NUPS:
 
-> Install the MCP server in per-project settings if your agent supports this. That way you can switch between different codebases and it will launch the corresponding unity project.
+- 🚀 **Launch through your agent**: Always launch Unity through your AI agent's MCP integration. Launching Unity from the Hub will prevent the MCP server from connecting.
 
-> You can add additional arguments to the unity command line — such as running in `-batchmode` or `-nographics` in order to run with background agents or inside of CI/CD pipelines. Use this format:
+- 📂 **Per-project setup**: If your agent supports it, configure the MCP server in your per-project settings. This allows you to seamlessly switch between Unity projects.
 
-```
-{
-  "mcpServers": {
-    "unity": {
-      "command": "npx -y @nurture-tech/unity-mcp-runner",
-      "args": [
-        "-unityPath",
-        "<path to unity editor>,
-        "-projectPath",
-        "."
-        "--"
-        "-batchmode"
-        ...
-      ]
+- ⚙️ **Command-line arguments**: You can pass additional arguments to Unity for advanced scenarios like running in `-batchmode` or `-nographics` for CI/CD pipelines. Add a `--` separator before the Unity-specific arguments:
+
+  ```json
+  {
+    "mcpServers": {
+      "unity": {
+        "command": "npx -y @nurture-tech/unity-mcp-runner",
+        "args": ["-unityPath", "<path to unity editor>", "-projectPath", ".", "--", "-batchmode", "-nographics"]
+      }
     }
   }
-}
-```
+  ```
 
-> _Do not add the -logFile parameter_. The mcp server requires that the log file is redirected to stdout in order to operate.
+- ⚠️ **Important**: Do not use the `-logFile` command-line argument. The MCP server relies on Unity's standard output for communication.
 
-> Split your desktop with your chat agent on one side and the unity editor on the other side. The unity editor needs to be visible on screen or else the `screenshot` tool will fail to see the scene view.
+- 🖥️ **Split screen for vision**: For tools like `Take Scene View Screenshot`, ensure the Unity editor is visible on your screen otherwise it will end up screenshotting the foreground window.
