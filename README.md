@@ -116,31 +116,25 @@ NUPS uses the official [C# MCP SDK](https://github.com/modelcontextprotocol/csha
 
 ## Usage Tips
 
-> Do not launch the Unity project manually from the Unity hub when working with this MCP. This will cause the MCP client to fail to connect.
+Here are some tips to get the most out of NUPS:
 
-> Install the MCP server in per-project settings if your agent supports this. That way you can switch between different codebases and it will launch the corresponding unity project.
+- 🚀 **Launch through your agent**: Always launch Unity through your AI agent's MCP integration. Launching Unity from the Hub will prevent the MCP server from connecting.
 
-> You can add additional arguments to the unity command line — such as running in `-batchmode` or `-nographics` in order to run with background agents or inside of CI/CD pipelines. Use this format:
+- 📂 **Per-project setup**: If your agent supports it, configure the MCP server in your per-project settings. This allows you to seamlessly switch between Unity projects.
 
-```
-{
-  "mcpServers": {
-    "unity": {
-      "command": "npx -y @nurture-tech/unity-mcp-runner",
-      "args": [
-        "-unityPath",
-        "<path to unity editor>,
-        "-projectPath",
-        "."
-        "--"
-        "-batchmode"
-        ...
-      ]
+- ⚙️ **Command-line arguments**: You can pass additional arguments to Unity for advanced scenarios like running in `-batchmode` or `-nographics` for CI/CD pipelines. Add a `--` separator before the Unity-specific arguments:
+
+  ```json
+  {
+    "mcpServers": {
+      "unity": {
+        "command": "npx -y @nurture-tech/unity-mcp-runner",
+        "args": ["-unityPath", "<path to unity editor>", "-projectPath", ".", "--", "-batchmode", "-nographics"]
+      }
     }
   }
-}
-```
+  ```
 
-> _Do not add the -logFile parameter_. The mcp server requires that the log file is redirected to stdout in order to operate.
+- ⚠️ **Important**: Do not use the `-logFile` command-line argument. The MCP server relies on Unity's standard output for communication.
 
-> Split your desktop with your chat agent on one side and the unity editor on the other side. The unity editor needs to be visible on screen or else the `screenshot` tool will fail to see the scene view.
+- 🖥️ **Split screen for vision**: For tools like `Take Scene View Screenshot`, ensure the Unity editor is visible on your screen otherwise it will end up screenshotting the foreground window.
