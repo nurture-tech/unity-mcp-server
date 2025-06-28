@@ -6,6 +6,8 @@
 
 - 🖼️ **Multimodal**: Your agent (with supported models) can see the Scene View, look through any camera in the scene, and watch play mode. It can also see thumbnails of your model assets.
 
+- 🔎 **Superhuman Search**: Automates the Search panel to perform a converged search in the hierarchy and project assets. This is much more powerful than searching in the Project panel.
+
 - ✔️ **Better Code Linting**: The MCP analyzes your Unity classes using Unity's compiler. This is more accurate than the compiler in your coding agent.
 
 - ⏩ **Simple Setup**: Just configure your `mcp.json` and you are all set.
@@ -63,6 +65,38 @@
 The working directory is different for different agents. So your mileage may vary using relative paths for `-projectPath`. Absolute paths will always work.
 
 This will automatically install the `is.nurture.mcp` package in your unity project. Feel free to commit those changes to source control.
+
+## About the Tools
+
+> Meet your Unity AI toolbox.
+
+| Tool                              | Description                                                                                            |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Assets**                        |                                                                                                        |
+| `Get Asset Contents`              | Get the full contents of an asset or sub-asset.                                                        |
+| `Copy Asset`                      | Copy an asset to a new path.                                                                           |
+| `Import Asset`                    | Import an asset from the filesystem into Unity.                                                        |
+| `Get Asset Importer Settings`     | Get the importer settings for an asset.                                                                |
+| **Prefabs**                       |                                                                                                        |
+| `Open Prefab`                     | Open a Unity prefab in isolation mode so that it can be edited.                                        |
+| **Scenes**                        |                                                                                                        |
+| `Open Scene`                      | Open a scene                                                                                           |
+| `Close Scene`                     | Close an open scene                                                                                    |
+| `Save Scene`                      | Save the current scene. If the scene is not dirty, this will do nothing.                               |
+| `Get GameObject in Active Scenes` | Get the details of a game object in a loaded scene or prefab by its hierarchy path.                    |
+| `Test Active Scene`               | Test the active scene by entering play mode and running for a given number of seconds.                 |
+| **Scripting**                     |                                                                                                        |
+| `Create Script`                   | Create or replace a C# code file at the given path. This also checks to make sure the script compiles. |
+| `Execute Code`                    | Execute code inside the Unity editor.                                                                  |
+| `Get Type Info`                   | Get public fields and methods on a Unity fully qualified type name, including the assembly.            |
+| **Search**                        |                                                                                                        |
+| `Search Objects`                  | Search project assets and scene objects.                                                               |
+| **Editor State**                  |                                                                                                        |
+| `Get State`                       | Get the state of the Unity Editor.                                                                     |
+| `Get Selection`                   | Get the objects the user has currently selected in the editor.                                         |
+| **Vision**                        |                                                                                                        |
+| `Focus on Game Object`            | Focus on a game object in the scene view.                                                              |
+| `Take Scene View Screenshot`      | Retrieve a preview of what is focused in the scene view.                                               |
 
 ## Known Issues
 
