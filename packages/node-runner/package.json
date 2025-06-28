@@ -13,7 +13,6 @@
   ],
   "type": "module",
   "scripts": {
-    "lint-staged": "lint-staged",
     "build": "tsc",
     "dev": "tsc -w",
     "prepublishOnly": "npm run build"
@@ -31,18 +30,9 @@
     "eslint-config-prettier": "^10.1.5",
     "globals": "^16.2.0",
     "lint-staged": "^16.1.2",
-    "prettier": "^3.6.0",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.35.0"
-  },
-  "lint-staged": {
-    "*.{js, jsx,ts,tsx}": [
-      "eslint --quiet --fix"
-    ],
-    "*.{json,js,ts,jsx,tsx,html}": [
-      "prettier --write --ignore-unknown"
-    ]
   },
   "dependencies": {
     "@types/argparse": "^2.0.17",

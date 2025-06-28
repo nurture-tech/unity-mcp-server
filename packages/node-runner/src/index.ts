@@ -20,6 +20,20 @@ if (devMode) {
   log = await fs.open(path.join(args.projectPath, "mcp.log"), "w");
 }
 
+// Check to make sure the Unity project path is valid
+
+if (!(await fs.stat(args.projectPath).catch(() => false))) {
+  throw new Error("Unity project path is not valid");
+}
+
+// Check to see if the Unity project is already open
+
+const lockFile = path.join(args.projectPath, "Temp", "UnityLockFile");
+
+if (await fs.stat(lockFile).catch(() => false)) {
+  throw new Error("Unity project is already open");
+}
+
 // Load the package.json for the current package we are running in and retrieve the version.
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 const packageData = await readPackageUp({

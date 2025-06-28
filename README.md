@@ -4,32 +4,31 @@
 
 ## Compatibility
 
-| Name | Compatible | Notes |
-|------|------------|-------|
-| **Models** |  |  |
-| GPT-4.1 | ✅ | |
-| Claude 4 Sonnet | ✅ |  |
-| Claude 4 Opus | ✅  |  |
-| Gemini 2.5 Pro | ✅  |  |
-| Gemini 2.5 Flash | ✅  |  |
-| o3 | ✅  | No image understanding |
-| o4-mini | ✅ | |
-| **Unity Versions** |  |  |
-| Unity 6000.0.x | ✅ | Higher versions should be fine. Lower versions may work but untested. |
-| **Agents** |  |  |
-| Cursor | ✅ |  |
-| Rider AI | ✅ |  |
-| Claude Desktop | ✅ |  |
-| Claude Code | ❌ | Hangs on tool calls |
-| **Operating Systems** |  |  |
-| Windows | ✅ |  |
-| Mac | ✅ |  |
-| Ubuntu | ❔ | Untested |
-
+| Name                  | Compatible | Notes                                                                 |
+| --------------------- | ---------- | --------------------------------------------------------------------- |
+| **Models**            |            |                                                                       |
+| GPT-4.1               | ✅         |                                                                       |
+| Claude 4 Sonnet       | ✅         |                                                                       |
+| Claude 4 Opus         | ✅         |                                                                       |
+| Gemini 2.5 Pro        | ✅         |                                                                       |
+| Gemini 2.5 Flash      | ✅         |                                                                       |
+| o3                    | ✅         | No image understanding                                                |
+| o4-mini               | ✅         |                                                                       |
+| **Unity Versions**    |            |                                                                       |
+| Unity 6000.0.x        | ✅         | Higher versions should be fine. Lower versions may work but untested. |
+| **Agents**            |            |                                                                       |
+| Cursor                | ✅         |                                                                       |
+| Rider AI              | ✅         |                                                                       |
+| Claude Desktop        | ✅         |                                                                       |
+| Claude Code           | ❌         | Hangs on tool calls                                                   |
+| **Operating Systems** |            |                                                                       |
+| Windows               | ✅         |                                                                       |
+| Mac                   | ✅         |                                                                       |
+| Ubuntu                | ❔         | Untested                                                              |
 
 ## Setup
 
-### 1. Install node.js
+### 1. Install [node.js](https://nodejs.org/en/download)
 
 ### 2. Configure `mcp.json`
 
@@ -41,7 +40,7 @@
       "args": [
         "-unityPath",
         "<path to unity editor>",
-        "-projectPath", 
+        "-projectPath",
         "<path to unity project>"
       ]
     }
@@ -53,11 +52,11 @@ The working directory is different for different agents. So your mileage may var
 
 This will automatically install the `is.nurture.mcp` package in your unity project. Feel free to commit those changes to source control.
 
-The first startup of the MCP will take a while because it has to install the package and compile scripts.
-
 ## Known Issues
 
-- The Google External Dependency Manager (EDMU) causes Unity to hang forever on startup when launched via Cursor on  Windows. This is under investigation.
+- The Google External Dependency Manager (EDMU) causes Unity to hang forever on startup when launched via Cursor on Windows. This is under investigation.
+
+- Claude Code hangs on tool calls.
 
 ## Adding Project-Specific Tools
 
@@ -87,7 +86,7 @@ You will likely need to quit unity and restart your agent in order for it to see
       "args": [
         "-unityPath",
         "<path to unity editor>,
-        "-projectPath", 
+        "-projectPath",
         "."
         "--"
         "-batchmode"
@@ -98,6 +97,6 @@ You will likely need to quit unity and restart your agent in order for it to see
 }
 ```
 
-> _Do not add the -logFile parameter_. The mcp server requires that the logFile is redirected to stdout in order to operate.
+> _Do not add the -logFile parameter_. The mcp server requires that the log file is redirected to stdout in order to operate.
 
 > Split your desktop with your chat agent on one side and the unity editor on the other side. The unity editor needs to be visible on screen or else the `screenshot` tool will fail to see the scene view.
