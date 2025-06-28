@@ -3,6 +3,18 @@
 First off, thank you for considering contributing to the Nurture Unity MCP Server (NUPS)!
 We welcome any type of contribution, from reporting bugs and suggesting enhancements to improving documentation and submitting new features.
 
+## Guiding Principles
+
+- Today's LLMs excel at code generation. The best way to interface with external tools is to interact through code over data when possible.
+
+- Fewer flexible tools over many specific tools. Every registered tool eats context.
+
+- Stay in C# as much as possible. This will make contributions more accessible to Unity developers.
+
+- Describe how to use the tool but not when to use the tool — unless there is a hard sequencing dependency. This leaves control in the user's hands.
+
+- Test exhaustively. LLMs provide more than enough unreliability to go around.
+
 ## Getting Started
 
 To develop locally, fork the NUPS repository and clone it in your local machine. The Unity MCP Server repo is a monorepo with

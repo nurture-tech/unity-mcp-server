@@ -2,6 +2,18 @@
 
 > A Model Context Protocol server for Unity
 
+## Key Features
+
+- 🖼️ **Multimodal**: Your agent (with supported models) can see the Scene View, look through any camera in the scene, and watch play mode. It can also see thumbnails of your model assets.
+
+- ✔️ **Better Code Linting**: The MCP analyzes your Unity classes using Unity's compiler. This is more accurate than the compiler in your coding agent.
+
+- ⏩ **Simple Setup**: Just configure your `mcp.json` and you are all set.
+
+- 🛠️ **Extensible**: Minimal boilerplate to add your own tools.
+
+- 📅 **Current**: Frequently updated to supprot the latest MCP protocol version — currently `2025-06-18` via the [Official MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sdk).
+
 ## Compatibility
 
 | Name                  | Compatible | Notes                                                                 |
