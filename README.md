@@ -62,8 +62,6 @@
 }
 ```
 
-The working directory is different for different agents. So your mileage may vary using relative paths for `-projectPath`. Absolute paths will always work.
-
 This will automatically install the `is.nurture.mcp` package in your unity project. Feel free to commit those changes to source control.
 
 ## About the Tools
@@ -108,13 +106,13 @@ This will automatically install the `is.nurture.mcp` package in your unity proje
 
 NUPS uses the official [C# MCP SDK](https://github.com/modelcontextprotocol/csharp-sdk).
 
-Create a static class to hold your tools. Add the `[McpServerToolType]` annotation to the class.
+1. Create a static class to hold your tools. Add the `[McpServerToolType]` annotation to the class.
 
-Declare static methods to implement each tool. Use the `[McpServerTool]` annotation to each method.
+2. Declare static methods to implement each tool. Add the `[McpServerTool]` annotation to each method.
 
-Reference the [Services](./packages/unity/Editor/Services) directory for examples.
+3. Reference the [Services](./packages/unity/Editor/Services) directory for examples.
 
-You will likely need to quit unity and restart your agent in order for it to see the new tools.
+4. You will likely need to quit unity and restart your agent in order for it to see the new tools.
 
 ## Usage Tips
 
