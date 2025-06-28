@@ -1,4 +1,4 @@
-# Nurture Unity MCP Server (NUPS)
+# Nurture Unity MCP Server (NUPS) 💜
 
 > A Model Context Protocol server for Unity
 
