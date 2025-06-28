@@ -6,17 +6,17 @@
 
 ## Key Features
 
-- 🖼️ **Multimodal**: Your agent (with supported models) can see the Scene View, look through any camera in the scene, and watch play mode. It can also see thumbnails of your model assets.
+- 🖼️ **Multimodal Vision**: Your agent can see what you see. It can view the scene, look through any camera, watch play mode, and inspect asset thumbnails.
 
-- 🔎 **Superhuman Search**: Automates the Search panel to perform a converged search in the hierarchy and project assets. This is much more powerful than searching in the Project panel.
+- 🔎 **Powerful Search**: Go beyond the project panel with simultaneous search across the hierarchy and project assets.
 
-- ✔️ **Better Code Linting**: The MCP analyzes your Unity classes using Unity's compiler. This is more accurate than the compiler in your coding agent.
+- ✔️ **Superior Code Analysis**: Leverage Unity's own compiler for code analysis that is more accurate than your agent's linter.
 
-- ⏩ **Simple Setup**: Just configure your `mcp.json` and you are all set.
+- ⏩ **Quick Start**: Get running in seconds with a single `mcp.json` configuration file.
 
-- 🛠️ **Extensible**: Minimal boilerplate to add your own tools.
+- 🛠️ **Extensible**: Add your own project-specific tools with minimal boilerplate.
 
-- 📅 **Current**: Frequently updated to supprot the latest MCP protocol version — currently `2025-06-18` via the [Official MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sdk).
+- 📅 **Always Current**: Kept up-to-date with the latest MCP protocol version — currently `2025-06-18` via the [Official MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sdk).
 
 ## Compatibility
 
