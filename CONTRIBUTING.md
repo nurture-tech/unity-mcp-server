@@ -5,7 +5,7 @@ We welcome any type of contribution, from reporting bugs and suggesting enhancem
 
 ## Getting Started
 
-To develop locally, fork the NUPS repository and clone it in your local machine. The Unity MCP Server repo is a monorepo with 
+To develop locally, fork the NUPS repository and clone it in your local machine. The Unity MCP Server repo is a monorepo with
 several packages inside the `packages` directory:
 
 `node-runner`: A nodejs script which automatically installs the Unity package in the project and then runs it - sanitizing the stdout.
@@ -28,19 +28,9 @@ When you commit your work, husky will run a pre-commit hook and lint your code.
 
 ### Commit Messages
 
-We use conventional commits to keep the commit history clean and readable. Please follow this format for your commit messages:
+We use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) style to keep the commit history clean and readable.
 
-```
-feat: Add a new feature
-fix: Fix a bug
-docs: Update documentation
-style: Make styling changes
-refactor: Refactor code without changing functionality
-test: Add or improve tests
-chore: Update build tasks, package manager configs, etc.
-```
-
-For example: `feat: Add support for custom camera in screenshot tool`
+For example: `feat(tools): Add support for custom camera in screenshot tool`
 
 ## Submitting Your Changes
 
@@ -71,7 +61,7 @@ If you have an idea for a new feature or an improvement to an existing one, plea
 
 This project and everyone participating in it is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior. (Note: A `CODE_OF_CONDUCT.md` file will need to be created).
 
-Thank you again for your contribution! 
+Thank you again for your contribution!
 
 ## Adding New Tools
 
