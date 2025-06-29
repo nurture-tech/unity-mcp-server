@@ -1,10 +1,13 @@
-﻿import { spawn } from "node:child_process";
+﻿import { spawn, exec } from "node:child_process";
 import { exit } from "node:process";
+import { promisify } from "node:util";
 import { ArgumentParser, BooleanOptionalAction } from "argparse";
 import { readPackageUp } from "read-package-up";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+
+const execAsync = promisify(exec);
 
 const parser = new ArgumentParser();
 parser.add_argument("-unityPath", { type: String, required: true });
@@ -23,15 +26,33 @@ if (devMode) {
 // Check to make sure the Unity project path is valid
 
 if (!(await fs.stat(args.projectPath).catch(() => false))) {
-  throw new Error("Unity project path is not valid");
+  console.error("Unity project path is not valid");
+  exit(1);
 }
 
 // Check to see if the Unity project is already open
 
 const lockFile = path.join(args.projectPath, "Temp", "UnityLockFile");
 
+// First check if lock file exists
 if (await fs.stat(lockFile).catch(() => false)) {
-  throw new Error("Unity project is already open");
+  // On Unix-like systems (macOS/Linux), use lsof to check if file is actually open
+  if (process.platform === "darwin" || process.platform === "linux") {
+    try {
+      await execAsync(`lsof "${lockFile}"`);
+      // If lsof succeeds, the file is open by a process (Unity is running)
+      console.error("Unity project is already open");
+      exit(1);
+    } catch {
+      // If lsof fails, the file exists but no process has it open
+      // This means Unity is not running, so we can proceed
+      await log?.write(`Lock file exists but not open by any process, proceeding...\n`);
+    }
+  } else {
+    // On Windows, fall back to simple file existence check
+    console.error("Unity project is already open");
+    exit(1);
+  }
 }
 
 // Load the package.json for the current package we are running in and retrieve the version.
