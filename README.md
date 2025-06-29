@@ -36,7 +36,7 @@
 | Cursor                | ✅         |                                                                       |
 | Rider AI              | ✅         |                                                                       |
 | Claude Desktop        | ✅         |                                                                       |
-| Claude Code           | ❌         | Hangs on tool calls                                                   |
+| Claude Code           | ✅         | Terminal requires Screen & System Audio Recording permissions on Mac  |
 | **Operating Systems** |            |                                                                       |
 | Windows               | ✅         |                                                                       |
 | Mac                   | ✅         |                                                                       |
