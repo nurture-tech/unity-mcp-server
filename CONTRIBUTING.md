@@ -1,6 +1,6 @@
-# Contributing to Nurture Unity MCP Server
+# Contributing to Union
 
-First off, thank you for considering contributing to the Nurture Unity MCP Server (NUPS)!
+First off, thank you for considering contributing to the Union - The Unity MCP Server!
 We welcome any type of contribution, from reporting bugs and suggesting enhancements to improving documentation and submitting new features.
 
 ## Guiding Principles
@@ -17,7 +17,7 @@ We welcome any type of contribution, from reporting bugs and suggesting enhancem
 
 ## Getting Started
 
-To develop locally, fork the NUPS repository and clone it in your local machine. The Unity MCP Server repo is a monorepo with
+To develop locally, fork the Union repository and clone it in your local machine. The Unity MCP Server repo is a monorepo with
 several packages inside the `packages` directory:
 
 `node-runner`: A nodejs script which automatically installs the Unity package in the project and then runs it - sanitizing the stdout.
@@ -77,4 +77,4 @@ Thank you again for your contribution!
 
 ## Adding New Tools
 
-NUPS operates on the principle of a minimum set of highly flexible tools. `execute_code` can handle just about any mutation to a Unity project. If the context you want to add is small and frequently needed, consider adding it to the `get_state` tool response instead of creating a new tool. If you want to enable a specific workflow, consider contributing a rules file in `rules`.
+Union operates on the principle of a minimum set of highly flexible tools. `execute_code` can handle just about any mutation to a Unity project. If the context you want to add is small and frequently needed, consider adding it to the `get_state` tool response instead of creating a new tool. If you want to enable a specific workflow, consider contributing a rules file in `rules`.

@@ -1,4 +1,4 @@
-# Nurture Unity MCP Server (NUPS) 💜
+# Union 💜 - The Unity MCP Server
 
 > A Model Context Protocol server for Unity
 
@@ -110,7 +110,7 @@ This will automatically install the `is.nurture.mcp` package in your unity proje
 
 ## Adding Project-Specific Tools
 
-NUPS uses the official [C# MCP SDK](https://github.com/modelcontextprotocol/csharp-sdk).
+Union uses the official [C# MCP SDK](https://github.com/modelcontextprotocol/csharp-sdk).
 
 1. Create a static class to hold your tools. Add the `[McpServerToolType]` annotation to the class.
 
@@ -122,7 +122,7 @@ NUPS uses the official [C# MCP SDK](https://github.com/modelcontextprotocol/csha
 
 ## Usage Tips
 
-Here are some tips to get the most out of NUPS:
+Here are some tips to get the most out of Union:
 
 - 🚀 **Launch through your agent**: Always launch Unity through your AI agent's MCP integration. Launching Unity from the Hub will prevent the MCP server from connecting.
 
