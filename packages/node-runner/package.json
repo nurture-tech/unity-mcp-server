@@ -1,6 +1,6 @@
 {
   "name": "@nurture-tech/unity-mcp-runner",
-  "description": "A Model Context Protocol server for Unity intended for commercial-level work",
+  "description": "A Model Context Protocol server for Unity",
   "version": "0.3.0",
   "license": "MIT",
   "bin": {

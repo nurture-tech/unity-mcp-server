@@ -1,5 +1,5 @@
 {
-  "name": "@nurture-tech/unity-mcp",
+  "name": "@nurture-tech/unity-mcp-server",
   "version": "0.3.0",
   "description": "A Model Context Protocol server for Unity",
   "repository": "github:nurture-tech/unity-mcp",
