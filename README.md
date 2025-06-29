@@ -143,4 +143,4 @@ Here are some tips to get the most out of Union:
 
 - ⚠️ **Important**: Do not use the `-logFile` command-line argument. The MCP server relies on Unity's standard output for communication.
 
-- 🖥️ **Split screen for vision**: For tools like `Take Scene View Screenshot`, ensure the Unity editor is visible on your screen otherwise it will end up screenshotting the foreground window.
+- 🖥️ **Split screen for vision**: For tools like `screenshot`, ensure the Unity editor is visible on your screen otherwise it will end up screenshotting the foreground window.
