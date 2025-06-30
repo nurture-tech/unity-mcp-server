@@ -16,3 +16,7 @@ node_modules/
 .env.local
 
 dist
+
+CHANGELOG.md
+
+README.md
