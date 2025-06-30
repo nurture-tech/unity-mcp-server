@@ -1,4 +1,6 @@
-﻿import { spawn, exec } from "node:child_process";
+﻿#!/usr/bin/env node
+
+import { spawn, exec } from "node:child_process";
 import { exit } from "node:process";
 import { promisify } from "node:util";
 import { ArgumentParser, BooleanOptionalAction } from "argparse";
