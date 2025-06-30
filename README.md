@@ -1,4 +1,4 @@
-# Union 💜 - The Unity MCP Server
+# Union ♾️ - The Unity MCP Server
 
 > A Model Context Protocol server for Unity
 
