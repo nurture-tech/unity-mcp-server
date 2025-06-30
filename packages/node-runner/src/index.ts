@@ -51,9 +51,16 @@ if (await fs.stat(lockFile).catch(() => false)) {
       await log?.write(`Lock file exists but not open by any process, proceeding...\n`);
     }
   } else {
-    // On Windows, fall back to simple file existence check
-    console.error("Unity project is already open");
-    exit(1);
+    // On Windows, try to delete the lock file to check if Unity is actually running
+    try {
+      await fs.unlink(lockFile);
+      // If deletion succeeds, Unity is not running, so we can proceed
+      await log?.write(`Lock file existed but was successfully deleted, Unity not running, proceeding...\n`);
+    } catch {
+      // If deletion fails, Unity is still running and has the file locked
+      console.error("Unity project is already open");
+      exit(1);
+    }
   }
 }
 
