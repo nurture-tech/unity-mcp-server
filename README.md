@@ -102,8 +102,6 @@ This will automatically install the `is.nurture.mcp` package in your unity proje
 
 - The Google External Dependency Manager (EDMU) causes Unity to hang forever on startup when launched via Cursor on Windows. This is under investigation.
 
-- Claude Code hangs on tool calls.
-
 - The `test_active_scene` tool sometimes fails with the error message `Maximum call stack size exceeded.`
 
 - The `search` tool occasionally fails with the error message `Search index is not ready yet. Please try again later.`
