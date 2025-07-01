@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Check if `UnityLockFile` is still open in windows. Avoids erroneous `Unity project is already open` messages.
 
+- `mcp.json` reference now uses the cmd `npx` by itself for Claude compatibility.
+
 ## [0.3.1] - 2025-06-30
 
 ### Fixed
