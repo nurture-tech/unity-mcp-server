@@ -48,17 +48,12 @@
 
 ### 2. Configure `mcp.json`
 
-```
+```json
 {
   "mcpServers": {
     "unity": {
-      "command": "npx -y @nurture-tech/unity-mcp-runner",
-      "args": [
-        "-unityPath",
-        "<path to unity editor>",
-        "-projectPath",
-        "<path to unity project>"
-      ]
+      "command": "npx",
+      "args": ["-y", "@nurture-tech/unity-mcp-runner", "-unityPath", "<path to unity editor>", "-projectPath", "<path to unity project>"]
     }
   }
 }
@@ -132,8 +127,18 @@ Here are some tips to get the most out of Union:
   {
     "mcpServers": {
       "unity": {
-        "command": "npx -y @nurture-tech/unity-mcp-runner",
-        "args": ["-unityPath", "<path to unity editor>", "-projectPath", ".", "--", "-batchmode", "-nographics"]
+        "command": "npx",
+        "args": [
+          "-y",
+          "@nurture-tech/unity-mcp-runner"
+          "-unityPath",
+          "<path to unity editor>",
+          "-projectPath",
+          ".",
+          "--",
+          "-batchmode",
+          "-nographics"
+        ]
       }
     }
   }
