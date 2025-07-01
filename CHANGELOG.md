@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added shebang to node-runner script so that `npx` works correctly.
 
+- `mcp.json` reference now uses the cmd `npx` by itself for Claude compatibility.
+
 ## [0.3.0] - 2025-06-30
 
 ### Added
