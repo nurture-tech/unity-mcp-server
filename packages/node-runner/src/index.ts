@@ -90,7 +90,30 @@ const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf8"));
 packageJson.dependencies["is.nurture.mcp"] = packageUrl;
 await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-const proc = spawn(unityPath, [...process.argv.slice(1), "-mcp", "-logFile", "-"]);
+// Only pass Unity-specific arguments, not the MCP runner arguments
+const unityArgs = ["-projectPath", args.projectPath, "-mcp", "-logFile", "-"];
+
+// Check if there are additional Unity arguments after "--" separator
+const separatorIndex = process.argv.indexOf("--");
+if (separatorIndex !== -1) {
+  unityArgs.push(...process.argv.slice(separatorIndex + 1));
+}
+
+// Set up environment variables for Unity Package Manager
+const env = {
+  ...process.env,
+};
+
+if (process.platform === "win32") {
+  // Fix for Windows: Unity Package Manager needs these environment variables
+  const userProfile = process.env.USERPROFILE || "C:\\Users\\Default";
+  env.PROGRAMDATA = process.env.PROGRAMDATA || "C:\\ProgramData";
+  env.ALLUSERSPROFILE = process.env.ALLUSERSPROFILE || "C:\\ProgramData";
+  env.SYSTEMROOT = process.env.SYSTEMROOT || "C:\\Windows";
+  env.LOCALAPPDATA = process.env.LOCALAPPDATA || path.join(userProfile, "AppData", "Local");
+}
+
+const proc = spawn(unityPath, unityArgs, { env });
 
 try {
   const code = await new Promise<number | null>((resolve, reject) => {
