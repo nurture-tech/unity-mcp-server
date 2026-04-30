@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+> Union is deprecated. Use [Unity's official MCP server](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.6/manual/integration/unity-mcp-overview.html).
+
+
 # Union ♾️ - The Unity MCP Server
 
 > A Model Context Protocol server for Unity
